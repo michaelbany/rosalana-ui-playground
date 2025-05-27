@@ -52,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
   <Primitive
     data-slot="button"
+    v-bind="props"
     :as="as"
     :as-child="asChild"
     :class="buttonVariants({ variant, size, class: props.class })"
