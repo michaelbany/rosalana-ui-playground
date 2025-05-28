@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { Primitive, useForwardProps, type PrimitiveProps } from "reka-ui";
 import { tv, type VariantProps } from "tailwind-variants";
+import UiIcon from "../UiIcon.vue";
+import { Motion } from "motion-v";
 
 const buttonStyles = tv({
-  base: "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0",
+  base:
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 " +
+    "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none " +
+    "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] " +
+    "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   variants: {
     variant: {
       default: "bg-primary text-primary-foreground hover:bg-primary/90",
-      action: "bg-action text-action-foreground hover:bg-action/90",
-      destructive:
-        "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+      destructive: "bg-destructive text-white hover:bg-destructive/90",
       outline:
         "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
       ghostline:
@@ -23,15 +27,16 @@ const buttonStyles = tv({
         "relative after:absolute after:bottom-2 after:left-0 after:h-[1px] after:w-2/3 after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100",
     },
     size: {
-      default: "h-10 px-4 py-2",
-      sm: "h-9 rounded-md px-3",
-      xs: "h-8 rounded-md px-2",
-      lg: "h-11 rounded-md px-8",
-      "icon-sm": "h-9 w-9",
-      icon: "h-10 w-10",
+      default: "h-9 px-4 py-2 has-[>svg]:px-3",
+      sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+      lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+      "icon-sm": "size-8",
+      icon: "size-9",
+      "icon-lg": "size-10",
     },
     disabled: {
-      true: "pointer-events-none opacity-50",
+      true: "opacity-50 cursor-not-allowed",
+      false: "",
     },
   },
   defaultVariants: {
@@ -75,7 +80,41 @@ const props = withDefaults(
 const forwarded = useForwardProps(props);
 </script>
 <template>
-  <Primitive v-bind="forwarded" :class="buttonStyles({ variant, size, disabled: props.disabled, class: props.class })" :as="as" :as-child="asChild">
-    <slot />
-  </Primitive>
+  <Motion as-child initial="rest" while-hover="hover">
+    <Primitive
+      v-bind="forwarded"
+      :as="as"
+      :as-child="asChild"
+      :class="buttonStyles({ variant, size, disabled: disabled || loading })"
+      class="relative overflow-hidden"
+      :disabled="disabled || loading"
+    >
+      <UiIcon
+        v-if="loading"
+        name="line-md:loading-loop"
+        class="shrink-0 animate-spin"
+      />
+      <Motion
+        class="inline-block"
+        :variants="{
+          rest: { y: 0, opacity: 1 },
+          hover: { y: -10, opacity: 0 },
+        }"
+        :transition="{ duration: 0.2 }"
+      >
+        <slot />
+      </Motion>
+
+      <Motion
+        class="absolute inline-block"
+        :variants="{
+          rest: { y: 10, opacity: 0 },
+          hover: { y: 0, opacity: 1 },
+        }"
+        :transition="{ duration: 0.2 }"
+      >
+        <slot />
+      </Motion>
+    </Primitive>
+  </Motion>
 </template>

@@ -9,9 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify/vue": "^5.0.0",
     "@tailwindcss/vite": "^4.1.7",
     "@vueuse/core": "^13.3.0",
-    "lucide-vue-next": "^0.511.0",
+    "motion-v": "^1.1.1",
     "reka-ui": "^2.2.1",
     "tailwind-merge": "^3.3.0",
     "tailwind-variants": "^1.0.0",
