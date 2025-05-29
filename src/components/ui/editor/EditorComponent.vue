@@ -52,25 +52,34 @@
         :tippy-options="{ duration: 100 }"
         v-if="editor"
       >
-        <div>
-          <button
+        <div class="px-3 py-1 border bg-white rounded-sm shadow-md flex gap-2">
+          <UiButton
             @click="editor.chain().focus().toggleBold().run()"
-            :class="{ 'is-active': editor.isActive('bold') }"
+            class="h-7 w-7 rounded-sm"
+            :class="{ 'text-red-500': editor?.isActive('bold') }"
+            size="icon"
+            variant="secondary"
           >
-            Bold
-          </button>
-          <button
+            <UiIcon name="lucide:bold" />
+          </UiButton>
+          <UiButton
             @click="editor.chain().focus().toggleItalic().run()"
-            :class="{ 'is-active': editor.isActive('italic') }"
+            class="h-7 w-7 rounded-sm"
+            :class="{ 'text-red-500': editor?.isActive('italic') }"
+            size="icon"
+            variant="secondary"
           >
-            Italic
-          </button>
-          <button
+            <UiIcon name="lucide:italic" />
+          </UiButton>
+          <UiButton
             @click="editor.chain().focus().toggleStrike().run()"
-            :class="{ 'is-active': editor.isActive('strike') }"
+            class="h-7 w-7 rounded-sm"
+            :class="{ 'text-red-500': editor?.isActive('strike') }"
+            size="icon"
+            variant="secondary"
           >
-            Strike
-          </button>
+            <UiIcon name="lucide:strikethrough" />
+          </UiButton>
         </div>
       </BubbleMenu>
 
