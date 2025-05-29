@@ -30,6 +30,7 @@
       <div class="flex justify-start items-center gap-1">
         <UiButton
           @click="editor.chain().focus().undo().run()"
+          :disabled="!editor?.can().undo()"
           size="icon"
           variant="secondary"
         >
@@ -37,6 +38,7 @@
         </UiButton>
         <UiButton
           @click="editor.chain().focus().redo().run()"
+          :disabled="!editor?.can().redo()"
           size="icon"
           variant="secondary"
         >
@@ -45,6 +47,33 @@
       </div>
     </div>
     <div>
+      <BubbleMenu
+        :editor="editor"
+        :tippy-options="{ duration: 100 }"
+        v-if="editor"
+      >
+        <div>
+          <button
+            @click="editor.chain().focus().toggleBold().run()"
+            :class="{ 'is-active': editor.isActive('bold') }"
+          >
+            Bold
+          </button>
+          <button
+            @click="editor.chain().focus().toggleItalic().run()"
+            :class="{ 'is-active': editor.isActive('italic') }"
+          >
+            Italic
+          </button>
+          <button
+            @click="editor.chain().focus().toggleStrike().run()"
+            :class="{ 'is-active': editor.isActive('strike') }"
+          >
+            Strike
+          </button>
+        </div>
+      </BubbleMenu>
+
       <EditorContent :editor="editor" class="w-full h-full" />
     </div>
     <pre>
@@ -54,7 +83,7 @@
 </template>
 
 <script setup>
-import { useEditor, EditorContent } from "@tiptap/vue-3";
+import { useEditor, EditorContent, BubbleMenu } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import UiButton from "../button/UiButton.vue";
 import UiIcon from "../UiIcon.vue";
