@@ -143,25 +143,41 @@ const color = ref<"blue" | "green" | "red" | "orange" | "gray">("blue");
 
 const selectedItems = ref<FolderOrDocument[]>([]);
 
+const lastClickedItem = ref<FolderOrDocument | null>(null);
+
 const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
   if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
-    selectedItems.value = [];
-    selectedItems.value.push(item);
+    selectedItems.value = [item];
+    lastClickedItem.value = item; // Zapamatování referenčního bodu
   } else {
     if (e.shiftKey) {
-      const lastSelected = selectedItems.value[selectedItems.value.length - 1];
-      if (lastSelected) {
-        const lastIndex = items.findIndex(
-          (i) => i.item.id === lastSelected.item.id
+      // Shift+click - od reference k aktuálnímu
+      const referenceItem = lastClickedItem.value || selectedItems.value[0];
+
+      if (referenceItem) {
+        const referenceIndex = items.findIndex(
+          (i) => i.item.id === referenceItem.item.id
         );
         const currentIndex = items.findIndex((i) => i.item.id === item.item.id);
-        const start = Math.min(lastIndex, currentIndex);
-        const end = Math.max(lastIndex, currentIndex);
-        selectedItems.value = items.slice(start, end + 1);
+
+        if (referenceIndex !== -1 && currentIndex !== -1) {
+          const start = Math.min(referenceIndex, currentIndex);
+          const end = Math.max(referenceIndex, currentIndex);
+          selectedItems.value = items.slice(start, end + 1);
+        }
+      } else {
+        // Fallback pokud není reference
+        selectedItems.value = [item];
+        lastClickedItem.value = item;
       }
     } else {
-      if (selectedItems.value.includes(item)) {
-        selectedItems.value.splice(selectedItems.value.indexOf(item), 1);
+      // Ctrl/Cmd+click - toggle selection
+      const index = selectedItems.value.findIndex(
+        (selected) => selected.item.id === item.item.id
+      );
+
+      if (index !== -1) {
+        selectedItems.value.splice(index, 1);
       } else {
         selectedItems.value.push(item);
       }
@@ -183,7 +199,7 @@ const gridSize = computed(() => {
 });
 </script>
 <template>
-  <div class="w-full" @click="() => selectedItems = []">
+  <div class="w-full" @click="() => (selectedItems = [])">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-bold mb-4">Folders</h2>
       <div class="space-x-2">
