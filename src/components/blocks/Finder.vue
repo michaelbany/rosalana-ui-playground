@@ -5,142 +5,25 @@ import FolderComponent from "../ui/folder/Folder.vue";
 import DocumentComponent, { type Document } from "../ui/document/Document.vue";
 import UiInput from "../ui/input/UiInput.vue";
 
-type FolderOrDocument =
+export type FolderOrDocument =
   | { type: "folder"; item: Folder }
   | { type: "document"; item: Document }
   | { type: "empty"; item: null };
 
-const rawItems: FolderOrDocument[] = [
+const props = withDefaults(
+  defineProps<{
+    items: FolderOrDocument[];
+    selected?: FolderOrDocument[];
+  }>(),
   {
-    type: "folder",
-    item: {
-      id: 1,
-      name: "Pracovní projekty",
-      documents: [
-        { id: 1, name: "Specifikace API.txt", type: "text" },
-        { id: 2, name: "Wireframy.png", type: "image" },
-        { id: 3, name: "Roadmap Q3.xlsx", type: "spreadsheet" },
-        { id: 4, name: "Profile Photo.png", type: "image" },
-      ],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 2,
-      name: "Osobní dokumenty",
-      documents: [
-        { id: 4, name: "Životopis.png", type: "image" },
-        { id: 5, name: "Motivační dopis.txt", type: "text" },
-        { id: 6, name: "Fotka na pas.png", type: "image" },
-      ],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 3,
-      name: "Faktury",
-      documents: [
-        { id: 7, name: "Faktura 2024-01.xlsx", type: "spreadsheet" },
-        { id: 8, name: "Faktura 2024-02.pdf", type: "pdf" },
-      ],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 4,
-      name: "Prezentace",
-      documents: [
-        { id: 9, name: "Firemní prezentace.pptx", type: "presentation" },
-      ],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 5,
-      name: "Smlouvy",
-      documents: [],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 6,
-      name: "Cestování",
-      documents: [
-        { id: 10, name: "Letenky.pdf", type: "pdf" },
-        { id: 11, name: "Itinerář.txt", type: "text" },
-        { id: 12, name: "Fotky z dovolené.png", type: "image" },
-      ],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 7,
-      name: "Škola",
-      documents: [
-        { id: 13, name: "Zápisky z přednášek.txt", type: "text" },
-        { id: 14, name: "Prezentace na seminář.pptx", type: "presentation" },
-      ],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 8,
-      name: "Hudba",
-      documents: [
-        { id: 15, name: "Playlist 2024.txt", type: "text" },
-        { id: 16, name: "Noty.pdf", type: "pdf" },
-      ],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 9,
-      name: "Recepty",
-      documents: [
-        { id: 17, name: "Babiččin koláč.txt", type: "text" },
-        { id: 18, name: "Fotka dortu.png", type: "image" },
-      ],
-    },
-  },
-  {
-    type: "folder",
-    item: {
-      id: 10,
-      name: "Sport",
-      documents: [
-        { id: 19, name: "Tréninkový plán.xlsx", type: "spreadsheet" },
-        { id: 20, name: "Výsledky závodů.pdf", type: "pdf" },
-      ],
-    },
-  },
-  {
-    type: "document",
-    item: { id: 21, name: "Poznámky.txt", type: "text" },
-  },
-  {
-    type: "document",
-    item: { id: 22, name: "Obrázek.png", type: "image" },
-  },
-  {
-    type: "document",
-    item: { id: 23, name: "Prezentace.pptx", type: "presentation" },
-  },
-  {
-    type: "document",
-    item: { id: 24, name: "Tabulka.xlsx", type: "spreadsheet" },
-  },
-];
+    items: () => [],
+  }
+);
+
+const emit = defineEmits(["select", "click"]);
 
 const items = computed(() => {
-  const filtered = rawItems.filter((item) => {
+  const filtered = props.items.filter((item) => {
     if (search.value.trim() === "") return true;
 
     const searchLower = search.value.toLowerCase();
@@ -151,7 +34,7 @@ const items = computed(() => {
     }
   });
 
-  const filteredLength = rawItems.length - filtered.length;
+  const filteredLength = props.items.length - filtered.length;
 
   if (filteredLength > 0) {
     const emptyItems: FolderOrDocument[] = Array.from(
@@ -214,6 +97,14 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
       }
     }
   }
+
+  emit("select", selectedItems.value);
+};
+
+const handleDeselect = () => {
+  selectedItems.value = [];
+  lastClickedItem.value = null;
+  emit("select", selectedItems);
 };
 
 const gridSize = computed(() => {
@@ -251,17 +142,18 @@ const gridSize = computed(() => {
 
     <UiInput
       class="mb-4 w-min text-sm"
-      placeholder="Search folders..."
-      :aria-label="'Search folders'"
+      placeholder="Search..."
+      :aria-label="'Search documents and folders'"
       v-model="search"
       name="search"
       autocomplete="off"
     />
 
     <div
+      v-if="items.length > 0 && !items.every((item) => item.type === 'empty')"
       class="grid gap-4 justify-between"
       :class="gridSize"
-      @click="() => (selectedItems = [])"
+      @click="handleDeselect"
     >
       <template v-for="(item, i) in items" :key="i">
         <FolderComponent
@@ -272,7 +164,7 @@ const gridSize = computed(() => {
           :size="size"
           :selected="selectedItems.includes(item)"
           @select="(e) => handleSelectItem(item, e)"
-          @click="() => console.log(`Folder clicked:`, item.item)"
+          @click="emit('click', item.item)"
         />
         <DocumentComponent
           v-else-if="item.type === 'document'"
@@ -281,10 +173,18 @@ const gridSize = computed(() => {
           :color="color"
           :selected="selectedItems.includes(item)"
           @select="(e) => handleSelectItem(item, e)"
-          @click="() => console.log(`Document clicked:`, item.item)"
+          @click="emit('click', item.item)"
         />
         <div v-else class="pointer-events-none select-none" />
       </template>
+    </div>
+
+    <div
+      v-else
+      class="text-center text-sm text-gray-400 my-8"
+      @click="handleDeselect"
+    >
+      No items found.
     </div>
   </div>
 </template>
