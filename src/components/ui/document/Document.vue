@@ -163,6 +163,8 @@ const isHovered = ref(false);
     @click.stop="handleSelectOrClick"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
+    @focus="isHovered = true"
+    @blur="isHovered = false"
     :class="props.selected ? 'bg-accent' : ''"
   >
     <motion.div
