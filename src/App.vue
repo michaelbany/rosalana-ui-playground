@@ -19,6 +19,7 @@ const items: FolderOrDocument[] = [
   },
   {
     type: "folder",
+    color: "orange",
     item: {
       id: 2,
       name: "Osobní dokumenty",
@@ -60,6 +61,7 @@ const items: FolderOrDocument[] = [
   },
   {
     type: "folder",
+    color: "green",
     item: {
       id: 6,
       name: "Cestování",
@@ -94,6 +96,7 @@ const items: FolderOrDocument[] = [
   },
   {
     type: "folder",
+    color: "gray",
     item: {
       id: 9,
       name: "Recepty",
@@ -116,6 +119,7 @@ const items: FolderOrDocument[] = [
   },
   {
     type: "document",
+    color: "red",
     item: { id: 21, name: "Poznámky.txt", type: "text" },
   },
   {
@@ -124,10 +128,12 @@ const items: FolderOrDocument[] = [
   },
   {
     type: "document",
+
     item: { id: 23, name: "Prezentace.pptx", type: "presentation" },
   },
   {
     type: "document",
+    color: "orange",
     item: { id: 24, name: "Tabulka.xlsx", type: "spreadsheet" },
   },
 ];

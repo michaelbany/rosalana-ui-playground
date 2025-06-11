@@ -6,8 +6,16 @@ import DocumentComponent, { type Document } from "../ui/document/Document.vue";
 import UiInput from "../ui/input/UiInput.vue";
 
 export type FolderOrDocument =
-  | { type: "folder"; item: Folder }
-  | { type: "document"; item: Document }
+  | {
+      type: "folder";
+      color?: "blue" | "green" | "red" | "orange" | "gray";
+      item: Folder;
+    }
+  | {
+      type: "document";
+      color?: "blue" | "green" | "red" | "orange" | "gray";
+      item: Document;
+    }
   | { type: "empty"; item: null };
 
 const props = withDefaults(
@@ -161,7 +169,7 @@ const gridSize = computed(() => {
           v-if="item.type === 'folder'"
           :key="item.item.id"
           :folder="item.item"
-          :color="color"
+          :color="item.color || color"
           :size="size"
           :selected="selectedItems.includes(item)"
           @select="(e) => handleSelectItem(item, e)"
@@ -172,7 +180,7 @@ const gridSize = computed(() => {
           v-else-if="item.type === 'document'"
           :document="item.item"
           :size="size"
-          :color="color"
+          :color="item.color || color"
           :selected="selectedItems.includes(item)"
           @select="(e) => handleSelectItem(item, e)"
           @click="emit('click', item.item)"

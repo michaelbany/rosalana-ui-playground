@@ -210,13 +210,13 @@ const selectColor = computed(() => {
         "
       >
         <defs>
-          <linearGradient id="back-gradient" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient :id="`back-gradient-${folder.id}`" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" :stop-color="folderColor?.back[0]" />
             <!-- blue-500 -->
             <stop offset="100%" :stop-color="folderColor?.back[1]" />
             <!-- blue-600 -->
           </linearGradient>
-          <linearGradient id="back-stroke" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient :id="`back-stroke-${folder.id}`" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" :stop-color="folderColor?.stroke[0]" />
             <!-- blue-50 -->
             <stop offset="100%" :stop-color="folderColor?.stroke[1]" />
@@ -230,8 +230,8 @@ const selectColor = computed(() => {
           width="20"
           height="16"
           rx="2"
-          fill="url(#back-gradient)"
-          stroke="url(#back-stroke)"
+          :fill="`url(#back-gradient-${folder.id})`"
+          :stroke="`url(#back-stroke-${folder.id})`"
           stroke-width="0.2"
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -312,13 +312,13 @@ const selectColor = computed(() => {
         "
       >
         <defs>
-          <linearGradient id="front-gradient" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient :id="`front-gradient-${folder.id}`" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" :stop-color="folderColor?.front[0]" />
             <!-- blue-400 -->
             <stop offset="100%" :stop-color="folderColor?.front[1]" />
             <!-- blue-600 -->
           </linearGradient>
-          <linearGradient id="front-stroke" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient :id="`front-stroke-${folder.id}`" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" :stop-color="folderColor?.stroke[0]" />
             <!-- blue-50 -->
             <stop offset="100%" :stop-color="folderColor?.stroke[1]" />
@@ -327,8 +327,8 @@ const selectColor = computed(() => {
         </defs>
 
         <path
-          fill="url(#front-gradient)"
-          stroke="url(#front-stroke)"
+          :fill="`url(#front-gradient-${folder.id})`"
+          :stroke="`url(#front-stroke-${folder.id})`"
           stroke-width="0.2"
           stroke-linecap="round"
           stroke-linejoin="round"

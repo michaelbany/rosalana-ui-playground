@@ -184,7 +184,12 @@ const isHovered = ref(false);
       >
         <defs>
           <!-- Pattern for grid -->
-          <pattern id="grid" width="2" height="2" patternUnits="userSpaceOnUse">
+          <pattern
+            :id="`grid-${document.id}`"
+            width="2"
+            height="2"
+            patternUnits="userSpaceOnUse"
+          >
             <path
               d="M 10 0 L 0 0 0 10"
               :class="colors.grid"
@@ -201,7 +206,7 @@ const isHovered = ref(false);
         >
           <path
             d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
-            fill="url(#grid)"
+            :fill="`url(#grid-${document.id})`"
           />
           <path d="M14 2v4a2 2 0 0 0 2 2h4" fill="url(#grid)" />
         </g>
