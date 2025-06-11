@@ -3,13 +3,14 @@ import { computed, ref } from "vue";
 import type { Folder } from "../ui/folder/Folder.vue";
 import FolderComponent from "../ui/folder/Folder.vue";
 import DocumentComponent, { type Document } from "../ui/document/Document.vue";
+import UiInput from "../ui/input/UiInput.vue";
 
 type FolderOrDocument = {
-  type: "folder" | "document";
+  type: "folder" | "document" | "empty"; // empty pro vyplnění prazdnych mist kvuli grid layoutu
   item: Folder | Document;
 };
 
-const items: FolderOrDocument[] = [
+const rawItems: FolderOrDocument[] = [
   {
     type: "folder",
     item: {
@@ -138,6 +139,33 @@ const items: FolderOrDocument[] = [
   },
 ];
 
+const items = computed(() => {
+  const filtered = rawItems.filter((item) => {
+    if (search.value.trim() === "") return true;
+
+    const searchLower = search.value.toLowerCase();
+    if (item.type === "folder") {
+      return item.item.name.toLowerCase().includes(searchLower);
+    } else {
+      return item.item.name.toLowerCase().includes(searchLower);
+    }
+  });
+
+  const filteredLength = rawItems.length - filtered.length;
+
+  if (filteredLength > 0) {
+    const emptyItems: FolderOrDocument[] = Array.from(
+      { length: filteredLength },
+      () => ({ type: "empty", item: {} as Folder | Document })
+    );
+
+    filtered.push(...emptyItems);
+  }
+
+  return filtered;
+});
+
+const search = ref("");
 const size = ref<"sm" | "md" | "lg">("md");
 const color = ref<"blue" | "green" | "red" | "orange" | "gray">("blue");
 
@@ -155,15 +183,17 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
       const referenceItem = lastClickedItem.value || selectedItems.value[0];
 
       if (referenceItem) {
-        const referenceIndex = items.findIndex(
+        const referenceIndex = items.value.findIndex(
           (i) => i.item.id === referenceItem.item.id
         );
-        const currentIndex = items.findIndex((i) => i.item.id === item.item.id);
+        const currentIndex = items.value.findIndex(
+          (i) => i.item.id === item.item.id
+        );
 
         if (referenceIndex !== -1 && currentIndex !== -1) {
           const start = Math.min(referenceIndex, currentIndex);
           const end = Math.max(referenceIndex, currentIndex);
-          selectedItems.value = items.slice(start, end + 1);
+          selectedItems.value = items.value.slice(start, end + 1);
         }
       } else {
         // Fallback pokud není reference
@@ -188,18 +218,18 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
 const gridSize = computed(() => {
   switch (size.value) {
     case "sm":
-      return "grid-cols-[repeat(auto-fit,minmax(120px,1fr))]";
+      return "grid-cols-[repeat(auto-fit,120px)]";
     case "md":
-      return "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]";
+      return "grid-cols-[repeat(auto-fit,150px)]";
     case "lg":
-      return "grid-cols-[repeat(auto-fit,minmax(180px,1fr))]";
+      return "grid-cols-[repeat(auto-fit,180px)]";
     default:
-      return "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]";
+      return "grid-cols-[repeat(auto-fit,150px)]";
   }
 });
 </script>
 <template>
-  <div class="w-full" @click="() => (selectedItems = [])">
+  <div class="w-full">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-bold mb-4">Folders</h2>
       <div class="space-x-2">
@@ -217,7 +247,21 @@ const gridSize = computed(() => {
         </select>
       </div>
     </div>
-    <div class="grid gap-4" :class="gridSize">
+
+    <UiInput
+      class="mb-4 w-min text-sm"
+      placeholder="Search folders..."
+      :aria-label="'Search folders'"
+      v-model="search"
+      name="search"
+      autocomplete="off"
+    />
+
+    <div
+      class="grid gap-4 justify-between"
+      :class="gridSize"
+      @click="() => (selectedItems = [])"
+    >
       <template v-for="(item, i) in items" :key="i">
         <FolderComponent
           v-if="item.type === 'folder'"
@@ -230,7 +274,7 @@ const gridSize = computed(() => {
           @click="() => console.log(`Folder clicked:`, item.item)"
         />
         <DocumentComponent
-          v-else
+          v-else-if="item.type === 'document'"
           :document="(item.item as Document)"
           :size="size"
           :color="color"
@@ -238,6 +282,7 @@ const gridSize = computed(() => {
           @select="(e) => handleSelectItem(item, e)"
           @click="() => console.log(`Document clicked:`, item.item)"
         />
+        <div v-else class="pointer-events-none select-none" />
       </template>
     </div>
   </div>
