@@ -15,9 +15,11 @@ const props = withDefaults(
   defineProps<{
     folder: Folder;
     size?: "sm" | "md" | "lg";
+    color?: "blue" | "green" | "red" | "orange" | "gray";
   }>(),
   {
     size: "md",
+    color: "blue",
   }
 );
 
@@ -35,6 +37,101 @@ const sizes = computed(() => {
 });
 
 const isHovered = ref(false);
+
+const folderColor = computed(() => {
+  switch (props.color) {
+    case "blue":
+      return {
+        back: [
+          "oklch(62.3% 0.214 259.815)", // blue-500
+          "oklch(42.4% 0.199 265.638)", // blue-600
+        ],
+        front: [
+          "oklch(70.7% 0.165 254.624)", // blue-400
+          "oklch(62.3% 0.214 259.815)", // blue-500
+        ],
+        stroke: [
+          "oklch(97% 0.014 254.604)", // blue-50
+          "oklch(93.2% 0.032 255.585)", // blue-100
+        ],
+      };
+    case "green":
+      return {
+        back: [
+          "oklch(62.3% 0.19 145)", // emerald-500
+          "oklch(49.2% 0.16 145)", // emerald-600
+        ],
+        front: [
+          "oklch(70.7% 0.15 145)", // emerald-400
+          "oklch(62.3% 0.19 145)", // emerald-500
+        ],
+        stroke: [
+          "oklch(97% 0.015 145)", // emerald-50
+          "oklch(93.2% 0.035 145)", // emerald-100
+        ],
+      };
+    case "red":
+      return {
+        back: [
+          "oklch(62.3% 0.22 29.2)", // red-500
+          "oklch(49.2% 0.19 29.2)", // red-600
+        ],
+        front: [
+          "oklch(70.7% 0.17 29.2)", // red-400
+          "oklch(62.3% 0.22 29.2)", // red-500
+        ],
+        stroke: [
+          "oklch(97% 0.02 29.2)", // red-50
+          "oklch(93.2% 0.04 29.2)", // red-100
+        ],
+      };
+    case "orange":
+      return {
+        back: [
+          "oklch(80% 0.18 60)", // orange-500
+          "oklch(70% 0.16 60)", // orange-600
+        ],
+        front: [
+          "oklch(88% 0.14 60)", // orange-400
+          "oklch(80% 0.18 60)", // orange-500
+        ],
+        stroke: [
+          "oklch(98% 0.02 60)", // orange-50
+          "oklch(95% 0.04 60)", // orange-100
+        ],
+      };
+    case "gray":
+      return {
+        back: [
+          "oklch(80% 0.01 270)", // gray-400
+          "oklch(65% 0.01 270)", // gray-500
+        ],
+        front: [
+          "oklch(90% 0.008 270)", // gray-200
+          "oklch(80% 0.01 270)", // gray-400
+        ],
+        stroke: [
+          "oklch(98% 0.005 270)", // gray-50
+          "oklch(93% 0.008 270)", // gray-100
+        ],
+      };
+    default:
+      return {
+        back: [
+          "oklch(62.3% 0.214 259.815)", // blue-500
+          "oklch(42.4% 0.199 265.638)", // blue-600
+        ],
+        front: [
+          "oklch(70.7% 0.165 254.624)", // blue-400
+          "oklch(62.3% 0.214 259.815)", // blue-500
+        ],
+        stroke: [
+          "oklch(97% 0.014 254.604)", // blue-50
+          "oklch(93.2% 0.032 255.585)", // blue-100
+        ],
+      };
+  }
+});
 </script>
 
 <template>
@@ -61,15 +158,15 @@ const isHovered = ref(false);
       >
         <defs>
           <linearGradient id="back-gradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="oklch(62.3% 0.214 259.815)" />
+            <stop offset="0%" :stop-color="folderColor?.back[0]" />
             <!-- blue-500 -->
-            <stop offset="100%" stop-color="oklch(42.4% 0.199 265.638)" />
+            <stop offset="100%" :stop-color="folderColor?.back[1]" />
             <!-- blue-600 -->
           </linearGradient>
           <linearGradient id="back-stroke" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="oklch(97% 0.014 254.604)" />
+            <stop offset="0%" :stop-color="folderColor?.stroke[0]" />
             <!-- blue-50 -->
-            <stop offset="100%" stop-color="oklch(93.2% 0.032 255.585)" />
+            <stop offset="100%" :stop-color="folderColor?.stroke[1]" />
             <!-- blue-100 -->
           </linearGradient>
         </defs>
@@ -111,7 +208,10 @@ const isHovered = ref(false);
             "
             :transition="{ delay: 0.1, type: 'tween', duration: 0.2 }"
           >
-            <DocumentComponent :document="props.folder.documents[2]" :size="props.size" />
+            <DocumentComponent
+              :document="props.folder.documents[2]"
+              :size="props.size"
+            />
           </motion.div>
 
           <motion.div
@@ -124,14 +224,20 @@ const isHovered = ref(false);
             "
             :transition="{ delay: 0.05, type: 'tween', duration: 0.2 }"
           >
-            <DocumentComponent :document="props.folder.documents[1]" :size="props.size" />
+            <DocumentComponent
+              :document="props.folder.documents[1]"
+              :size="props.size"
+            />
           </motion.div>
 
           <motion.div
             class="absolute -translate-x-1/2 -translate-y-1/2"
             v-if="props.folder.documents[0]"
           >
-            <DocumentComponent :document="props.folder.documents[0]" :size="props.size" />
+            <DocumentComponent
+              :document="props.folder.documents[0]"
+              :size="props.size"
+            />
           </motion.div>
         </motion.div>
       </div>
@@ -153,15 +259,15 @@ const isHovered = ref(false);
       >
         <defs>
           <linearGradient id="front-gradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="oklch(70.7% 0.165 254.624)" />
+            <stop offset="0%" :stop-color="folderColor?.front[0]" />
             <!-- blue-400 -->
-            <stop offset="100%" stop-color="oklch(62.3% 0.214 259.815)" />
+            <stop offset="100%" :stop-color="folderColor?.front[1]" />
             <!-- blue-600 -->
           </linearGradient>
           <linearGradient id="front-stroke" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="oklch(97% 0.014 254.604)" />
+            <stop offset="0%" :stop-color="folderColor?.stroke[0]" />
             <!-- blue-50 -->
-            <stop offset="100%" stop-color="oklch(93.2% 0.032 255.585)" />
+            <stop offset="100%" :stop-color="folderColor?.stroke[1]" />
             <!-- blue-100 -->
           </linearGradient>
         </defs>
