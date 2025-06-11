@@ -15,12 +15,35 @@ const props = withDefaults(
     document: Document;
     size?: "sm" | "md" | "lg";
     color?: "blue" | "green" | "red" | "orange" | "gray";
+    selected?: boolean;
+    preventSelect?: boolean;
   }>(),
   {
     size: "md",
     color: "blue",
   }
 );
+
+const emit = defineEmits(["click", "select"]);
+
+let clickTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const handleSelectOrClick = (event: PointerEvent) => {
+  if (props.preventSelect) {
+    emit("click", event);
+  } else {
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      clickTimeout = null;
+      emit("click", event);
+    } else {
+      emit("select", event); // vždy emit select na první klik
+      clickTimeout = setTimeout(() => {
+        clickTimeout = null;
+      }, 250);
+    }
+  }
+};
 
 const sizes = computed(() => {
   switch (props.size) {
@@ -106,14 +129,33 @@ const colors = computed(() => {
   }
 });
 
+const selectColor = computed(() => {
+  switch (props.color) {
+    case "blue":
+      return "bg-blue-500 text-white";
+    case "green":
+      return "bg-green-500 text-white";
+    case "red":
+      return "bg-red-500 text-white";
+    case "orange":
+      return "bg-orange-500 text-white";
+    case "gray":
+      return "bg-gray-500 text-white";
+    default:
+      return "bg-blue-500 text-white";
+  }
+});
+
 const isHovered = ref(false);
 </script>
 <template>
   <UiButton
     class="h-auto flex-col gap-0 cursor-pointer"
     variant="ghost"
+    @click.stop="handleSelectOrClick"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
+    :class="props.selected ? 'bg-accent' : ''"
   >
     <motion.div
       class="relative inline-block select-none h-full"
@@ -156,7 +198,10 @@ const isHovered = ref(false);
       </svg>
     </motion.div>
 
-    <p class="text-center text-sm font-medium">
+    <p
+      class="text-center text-sm font-medium"
+      :class="props.selected ? `${selectColor} rounded-sm px-1` : ''"
+    >
       {{ props.document.name }}
     </p>
     <span class="text-xs mt-1 text-muted-foreground">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Container from "./components/Container.vue";
 import EditorComponent from "./components/ui/editor/EditorComponent.vue";
-import Folders from "./components/blocks/Folders.vue";
+import Folders from "./components/blocks/Finder.vue";
 </script>
 
 <template>

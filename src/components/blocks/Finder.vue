@@ -141,6 +141,34 @@ const items: FolderOrDocument[] = [
 const size = ref<"sm" | "md" | "lg">("md");
 const color = ref<"blue" | "green" | "red" | "orange" | "gray">("blue");
 
+const selectedItems = ref<FolderOrDocument[]>([]);
+
+const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
+  if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
+    selectedItems.value = [];
+    selectedItems.value.push(item);
+  } else {
+    if (e.shiftKey) {
+      const lastSelected = selectedItems.value[selectedItems.value.length - 1];
+      if (lastSelected) {
+        const lastIndex = items.findIndex(
+          (i) => i.item.id === lastSelected.item.id
+        );
+        const currentIndex = items.findIndex((i) => i.item.id === item.item.id);
+        const start = Math.min(lastIndex, currentIndex);
+        const end = Math.max(lastIndex, currentIndex);
+        selectedItems.value = items.slice(start, end + 1);
+      }
+    } else {
+      if (selectedItems.value.includes(item)) {
+        selectedItems.value.splice(selectedItems.value.indexOf(item), 1);
+      } else {
+        selectedItems.value.push(item);
+      }
+    }
+  }
+};
+
 const gridSize = computed(() => {
   switch (size.value) {
     case "sm":
@@ -155,7 +183,7 @@ const gridSize = computed(() => {
 });
 </script>
 <template>
-  <div class="w-full">
+  <div class="w-full" @click="() => selectedItems = []">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-bold mb-4">Folders</h2>
       <div class="space-x-2">
@@ -181,6 +209,8 @@ const gridSize = computed(() => {
           :folder="(item.item as Folder)"
           :color="color"
           :size="size"
+          :selected="selectedItems.includes(item)"
+          @select="(e) => handleSelectItem(item, e)"
           @click="() => console.log(`Folder clicked:`, item.item)"
         />
         <DocumentComponent
@@ -188,6 +218,8 @@ const gridSize = computed(() => {
           :document="(item.item as Document)"
           :size="size"
           :color="color"
+          :selected="selectedItems.includes(item)"
+          @select="(e) => handleSelectItem(item, e)"
           @click="() => console.log(`Document clicked:`, item.item)"
         />
       </template>
