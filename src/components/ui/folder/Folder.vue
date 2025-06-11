@@ -177,6 +177,7 @@ const selectColor = computed(() => {
 <template>
   <UiButton
     class="h-auto flex-col gap-0 cursor-pointer"
+    :aria-label="`${props.folder.name}, ${props.folder.documents.length} documents`"
     variant="ghost"
     @click.stop="handleSelectOrClick"
     @mouseenter="isHovered = true"
@@ -193,6 +194,7 @@ const selectColor = computed(() => {
         xmlns="http://www.w3.org/2000/svg"
         :class="sizes"
         viewBox="0 0 24 24"
+        tabindex="-1"
         :initial="{ transform: 'scale(1)' }"
         :animate="
           isHovered ? { transform: 'scale(0.9)' } : { transform: 'scale(1)' }
@@ -290,6 +292,7 @@ const selectColor = computed(() => {
         xmlns="http://www.w3.org/2000/svg"
         :class="sizes"
         viewBox="0 0 24 24"
+        tabindex="-1"
         :animate="
           isHovered
             ? {
