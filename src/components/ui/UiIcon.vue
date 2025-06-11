@@ -7,7 +7,7 @@ interface Props {
   name: string
   /** 1em, 24, "2rem", … – pokud chceš raději tailwind třídy, ponech null  */
   size?: string | number | null
-  class?: string
+  class?: any
 }
 
 const props = withDefaults(defineProps<Props>(), {

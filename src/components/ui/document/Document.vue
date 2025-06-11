@@ -14,8 +14,12 @@ const props = withDefaults(
   defineProps<{
     document: Document;
     size?: "sm" | "md" | "lg";
+    color?: "blue" | "green" | "red" | "orange" | "gray";
   }>(),
-  {}
+  {
+    size: "md",
+    color: "blue",
+  }
 );
 
 const sizes = computed(() => {
@@ -61,6 +65,47 @@ const iconSize = computed(() => {
   }
 });
 
+const colors = computed(() => {
+  switch (props.color) {
+    case "blue":
+      return {
+        icon: "text-blue-300",
+        grid: "stroke-blue-50 fill-blue-100",
+        stroke: "stroke-blue-200",
+      };
+    case "green":
+      return {
+        icon: "text-green-300",
+        grid: "stroke-green-50 fill-green-100",
+        stroke: "stroke-green-200",
+      };
+    case "red":
+      return {
+        icon: "text-red-300",
+        grid: "stroke-red-50 fill-red-100",
+        stroke: "stroke-red-200",
+      };
+    case "orange":
+      return {
+        icon: "text-orange-300",
+        grid: "stroke-orange-50 fill-orange-100",
+        stroke: "stroke-orange-200",
+      };
+    case "gray":
+      return {
+        icon: "text-gray-300",
+        grid: "stroke-gray-50 fill-gray-100",
+        stroke: "stroke-gray-200",
+      };
+    default:
+      return {
+        icon: "text-blue-300",
+        grid: "stroke-blue-50 fill-blue-100",
+        stroke: "stroke-blue-200",
+      };
+  }
+});
+
 const isHovered = ref(false);
 </script>
 <template>
@@ -75,9 +120,9 @@ const isHovered = ref(false);
       :animate="isHovered ? { scale: 1.05 } : { scale: 1 }"
     >
       <UiIcon
-        class="text-gray-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         :name="icon"
-        :class="iconSize"
+        :class="[iconSize, colors.icon]"
       />
 
       <svg
@@ -85,17 +130,28 @@ const isHovered = ref(false);
         :class="sizes"
         viewBox="0 0 24 24"
       >
-        <!-- Icon from Lucide by Lucide Contributors - https://github.com/lucide-icons/lucide/blob/main/LICENSE -->
+        <defs>
+          <!-- Pattern for grid -->
+          <pattern id="grid" width="2" height="2" patternUnits="userSpaceOnUse">
+            <path
+              d="M 10 0 L 0 0 0 10"
+              :class="colors.grid"
+              stroke-width="0.6"
+            />
+          </pattern>
+        </defs>
+
         <g
-          class="fill-white stroke-gray-200"
+          :class="colors.stroke"
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="0.6"
         >
           <path
             d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+            fill="url(#grid)"
           />
-          <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+          <path d="M14 2v4a2 2 0 0 0 2 2h4" fill="url(#grid)" />
         </g>
       </svg>
     </motion.div>

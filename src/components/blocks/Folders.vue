@@ -187,6 +187,8 @@ const gridSize = computed(() => {
           v-else
           :document="(item.item as Document)"
           :size="size"
+          :color="color"
+          @click="() => console.log(`Document clicked:`, item.item)"
         />
       </template>
     </div>
