@@ -14,6 +14,7 @@ const props = withDefaults(
   defineProps<{
     items: FolderOrDocument[];
     selected?: FolderOrDocument[];
+    preventSelect?: boolean;
   }>(),
   {
     items: () => [],
@@ -165,6 +166,7 @@ const gridSize = computed(() => {
           :selected="selectedItems.includes(item)"
           @select="(e) => handleSelectItem(item, e)"
           @click="emit('click', item.item)"
+          :prevent-select="props.preventSelect"
         />
         <DocumentComponent
           v-else-if="item.type === 'document'"
@@ -174,6 +176,7 @@ const gridSize = computed(() => {
           :selected="selectedItems.includes(item)"
           @select="(e) => handleSelectItem(item, e)"
           @click="emit('click', item.item)"
+          :prevent-select="props.preventSelect"
         />
         <div v-else class="pointer-events-none select-none" />
       </template>

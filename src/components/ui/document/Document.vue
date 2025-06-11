@@ -157,7 +157,7 @@ const isHovered = ref(false);
 </script>
 <template>
   <UiButton
-    class="h-auto flex-col gap-0 cursor-pointer"
+    class="h-auto flex-col gap-0 cursor-pointer select-none"
     variant="ghost"
     :aria-label="`${props.document.name}, ${props.document.type}`"
     @click.stop="handleSelectOrClick"

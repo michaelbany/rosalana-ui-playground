@@ -183,7 +183,7 @@ const selectColor = computed(() => {
 
 <template>
   <UiButton
-    class="h-auto flex-col gap-0 cursor-pointer"
+    class="h-auto flex-col gap-0 cursor-pointer select-none"
     :aria-label="`${props.folder.name}, ${props.folder.documents.length} documents`"
     variant="ghost"
     @click.stop="handleSelectOrClick"

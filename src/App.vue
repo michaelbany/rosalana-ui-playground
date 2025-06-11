@@ -142,7 +142,7 @@ const items: FolderOrDocument[] = [
     <Container name="Folder">
       <Folders 
         :items="items"
-        @click="(i) => console.log(i)"
+        @click="(i) => console.log('clicked', i)"
         @select="(i) => console.log('Selected:', i)"
         />
     </Container>
