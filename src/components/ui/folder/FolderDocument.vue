@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import UiIcon from "../UiIcon.vue";
-
-export type Document = {
-  id: number | string;
-  name: string;
-  type: "text" | "image" | "pdf" | "spreadsheet" | "presentation";
-};
+import type { Document } from "../document/Document.vue";
 
 const props = withDefaults(
   defineProps<{

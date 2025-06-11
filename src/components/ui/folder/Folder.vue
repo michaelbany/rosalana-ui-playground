@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import type { Document } from "./Document.vue";
 import UiButton from "../button/UiButton.vue";
 import { motion } from "motion-v";
-import DocumentComponent from "./Document.vue";
+import DocumentComponent from "./FolderDocument.vue";
+import type { Document } from "../document/Document.vue";
 
 export type Folder = {
   id: number;

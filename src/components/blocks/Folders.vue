@@ -2,85 +2,139 @@
 import { computed, ref } from "vue";
 import type { Folder } from "../ui/folder/Folder.vue";
 import FolderComponent from "../ui/folder/Folder.vue";
+import DocumentComponent, { type Document } from "../ui/document/Document.vue";
 
-const folders: Folder[] = [
+type FolderOrDocument = {
+  type: "folder" | "document";
+  item: Folder | Document;
+};
+
+const items: FolderOrDocument[] = [
   {
-    id: 1,
-    name: "Pracovní projekty",
-    documents: [
-      { id: 1, name: "Specifikace API", type: "text" },
-      { id: 2, name: "Wireframy", type: "image" },
-      { id: 3, name: "Roadmap Q3", type: "spreadsheet" },
-      { id: 4, name: "Profile Photo", type: "image" },
-    ],
+    type: "folder",
+    item: {
+      id: 1,
+      name: "Pracovní projekty",
+      documents: [
+        { id: 1, name: "Specifikace API.txt", type: "text" },
+        { id: 2, name: "Wireframy.png", type: "image" },
+        { id: 3, name: "Roadmap Q3.xlsx", type: "spreadsheet" },
+        { id: 4, name: "Profile Photo.png", type: "image" },
+      ],
+    },
   },
   {
-    id: 2,
-    name: "Osobní dokumenty",
-    documents: [
-      { id: 4, name: "Životopis", type: "image" },
-      { id: 5, name: "Motivační dopis", type: "text" },
-      { id: 6, name: "Fotka na pas", type: "image" },
-    ],
+    type: "folder",
+    item: {
+      id: 2,
+      name: "Osobní dokumenty",
+      documents: [
+        { id: 4, name: "Životopis.png", type: "image" },
+        { id: 5, name: "Motivační dopis.txt", type: "text" },
+        { id: 6, name: "Fotka na pas.png", type: "image" },
+      ],
+    },
   },
   {
-    id: 3,
-    name: "Faktury",
-    documents: [
-      { id: 7, name: "Faktura 2024-01", type: "spreadsheet" },
-      { id: 8, name: "Faktura 2024-02", type: "pdf" },
-    ],
+    type: "folder",
+    item: {
+      id: 3,
+      name: "Faktury",
+      documents: [
+        { id: 7, name: "Faktura 2024-01.xlsx", type: "spreadsheet" },
+        { id: 8, name: "Faktura 2024-02.pdf", type: "pdf" },
+      ],
+    },
   },
   {
-    id: 4,
-    name: "Prezentace",
-    documents: [{ id: 9, name: "Firemní prezentace", type: "presentation" }],
+    type: "folder",
+    item: {
+      id: 4,
+      name: "Prezentace",
+      documents: [
+        { id: 9, name: "Firemní prezentace.pptx", type: "presentation" },
+      ],
+    },
   },
   {
-    id: 5,
-    name: "Smlouvy",
-    documents: [],
+    type: "folder",
+    item: {
+      id: 5,
+      name: "Smlouvy",
+      documents: [],
+    },
   },
   {
-    id: 6,
-    name: "Cestování",
-    documents: [
-      { id: 10, name: "Letenky", type: "pdf" },
-      { id: 11, name: "Itinerář", type: "text" },
-      { id: 12, name: "Fotky z dovolené", type: "image" },
-    ],
+    type: "folder",
+    item: {
+      id: 6,
+      name: "Cestování",
+      documents: [
+        { id: 10, name: "Letenky.pdf", type: "pdf" },
+        { id: 11, name: "Itinerář.txt", type: "text" },
+        { id: 12, name: "Fotky z dovolené.png", type: "image" },
+      ],
+    },
   },
   {
-    id: 7,
-    name: "Škola",
-    documents: [
-      { id: 13, name: "Zápisky z přednášek", type: "text" },
-      { id: 14, name: "Prezentace na seminář", type: "presentation" },
-    ],
+    type: "folder",
+    item: {
+      id: 7,
+      name: "Škola",
+      documents: [
+        { id: 13, name: "Zápisky z přednášek.txt", type: "text" },
+        { id: 14, name: "Prezentace na seminář.pptx", type: "presentation" },
+      ],
+    },
   },
   {
-    id: 8,
-    name: "Hudba",
-    documents: [
-      { id: 15, name: "Playlist 2024", type: "text" },
-      { id: 16, name: "Noty", type: "pdf" },
-    ],
+    type: "folder",
+    item: {
+      id: 8,
+      name: "Hudba",
+      documents: [
+        { id: 15, name: "Playlist 2024.txt", type: "text" },
+        { id: 16, name: "Noty.pdf", type: "pdf" },
+      ],
+    },
   },
   {
-    id: 9,
-    name: "Recepty",
-    documents: [
-      { id: 17, name: "Babiččin koláč", type: "text" },
-      { id: 18, name: "Fotka dortu", type: "image" },
-    ],
+    type: "folder",
+    item: {
+      id: 9,
+      name: "Recepty",
+      documents: [
+        { id: 17, name: "Babiččin koláč.txt", type: "text" },
+        { id: 18, name: "Fotka dortu.png", type: "image" },
+      ],
+    },
   },
   {
-    id: 10,
-    name: "Sport",
-    documents: [
-      { id: 19, name: "Tréninkový plán", type: "spreadsheet" },
-      { id: 20, name: "Výsledky závodů", type: "pdf" },
-    ],
+    type: "folder",
+    item: {
+      id: 10,
+      name: "Sport",
+      documents: [
+        { id: 19, name: "Tréninkový plán.xlsx", type: "spreadsheet" },
+        { id: 20, name: "Výsledky závodů.pdf", type: "pdf" },
+      ],
+    },
+  },
+  {
+    type: "document",
+    item: { id: 21, name: "Poznámky.txt", type: "text" },
+  },
+  {
+    type: "document",
+    item: { id: 22, name: "Obrázek.png", type: "image" },
+  },
+  {
+    type: "document",
+    item: { id: 23, name: "Prezentace.pptx", type: "presentation" },
+  },
+  {
+    type: "document",
+    item: { id: 24, name: "Tabulka.xlsx", type: "spreadsheet" },
   },
 ];
 
@@ -120,14 +174,21 @@ const gridSize = computed(() => {
       </div>
     </div>
     <div class="grid gap-4" :class="gridSize">
-      <FolderComponent
-        v-for="f in folders"
-        :key="f.id"
-        :folder="f"
-        :color="color"
-        :size="size"
-        @click="() => console.log(`Folder clicked:`, f)"
-      />
+      <template v-for="(item, i) in items" :key="i">
+        <FolderComponent
+          v-if="item.type === 'folder'"
+          :key="item.item.id"
+          :folder="(item.item as Folder)"
+          :color="color"
+          :size="size"
+          @click="() => console.log(`Folder clicked:`, item.item)"
+        />
+        <DocumentComponent
+          v-else
+          :document="(item.item as Document)"
+          :size="size"
+        />
+      </template>
     </div>
   </div>
 </template>
