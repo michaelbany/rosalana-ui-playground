@@ -5,10 +5,10 @@ import FolderComponent from "../ui/folder/Folder.vue";
 import DocumentComponent, { type Document } from "../ui/document/Document.vue";
 import UiInput from "../ui/input/UiInput.vue";
 
-type FolderOrDocument = {
-  type: "folder" | "document" | "empty"; // empty pro vyplnění prazdnych mist kvuli grid layoutu
-  item: Folder | Document;
-};
+type FolderOrDocument =
+  | { type: "folder"; item: Folder }
+  | { type: "document"; item: Document }
+  | { type: "empty"; item: null };
 
 const rawItems: FolderOrDocument[] = [
   {
@@ -146,7 +146,7 @@ const items = computed(() => {
     const searchLower = search.value.toLowerCase();
     if (item.type === "folder") {
       return item.item.name.toLowerCase().includes(searchLower);
-    } else {
+    } else if (item.type === "document") {
       return item.item.name.toLowerCase().includes(searchLower);
     }
   });
@@ -156,7 +156,7 @@ const items = computed(() => {
   if (filteredLength > 0) {
     const emptyItems: FolderOrDocument[] = Array.from(
       { length: filteredLength },
-      () => ({ type: "empty", item: {} as Folder | Document })
+      () => ({ type: "empty", item: null })
     );
 
     filtered.push(...emptyItems);
@@ -174,6 +174,7 @@ const selectedItems = ref<FolderOrDocument[]>([]);
 const lastClickedItem = ref<FolderOrDocument | null>(null);
 
 const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
+  if (item.type === "empty") return; // Ignorovat prázdné položky
   if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
     selectedItems.value = [item];
     lastClickedItem.value = item; // Zapamatování referenčního bodu
@@ -182,12 +183,12 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
       // Shift+click - od reference k aktuálnímu
       const referenceItem = lastClickedItem.value || selectedItems.value[0];
 
-      if (referenceItem) {
+      if (referenceItem && referenceItem.type !== "empty") {
         const referenceIndex = items.value.findIndex(
-          (i) => i.item.id === referenceItem.item.id
+          (i) => i.item?.id === referenceItem.item.id
         );
         const currentIndex = items.value.findIndex(
-          (i) => i.item.id === item.item.id
+          (i) => i.item?.id === item.item.id
         );
 
         if (referenceIndex !== -1 && currentIndex !== -1) {
@@ -203,7 +204,7 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
     } else {
       // Ctrl/Cmd+click - toggle selection
       const index = selectedItems.value.findIndex(
-        (selected) => selected.item.id === item.item.id
+        (selected) => selected.item?.id === item.item.id
       );
 
       if (index !== -1) {
@@ -266,7 +267,7 @@ const gridSize = computed(() => {
         <FolderComponent
           v-if="item.type === 'folder'"
           :key="item.item.id"
-          :folder="(item.item as Folder)"
+          :folder="item.item"
           :color="color"
           :size="size"
           :selected="selectedItems.includes(item)"
@@ -275,7 +276,7 @@ const gridSize = computed(() => {
         />
         <DocumentComponent
           v-else-if="item.type === 'document'"
-          :document="(item.item as Document)"
+          :document="item.item"
           :size="size"
           :color="color"
           :selected="selectedItems.includes(item)"
