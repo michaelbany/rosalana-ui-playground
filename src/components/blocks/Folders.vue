@@ -84,7 +84,7 @@ const folders: Folder[] = [
   },
 ];
 
-const size = ref<"sm" | "md" | "lg">("sm");
+const size = ref<"sm" | "md" | "lg">("md");
 
 const gridSize = computed(() => {
   switch (size.value) {
