@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import UiButton from "../button/UiButton.vue";
 import { motion } from "motion-v";
 import DocumentComponent from "./FolderDocument.vue";
@@ -45,6 +45,13 @@ const handleSelectOrClick = (event: PointerEvent) => {
     }
   }
 };
+
+onUnmounted(() => {
+  if (clickTimeout) {
+    clearTimeout(clickTimeout);
+    clickTimeout = null;
+  }
+});
 
 const sizes = computed(() => {
   switch (props.size) {
