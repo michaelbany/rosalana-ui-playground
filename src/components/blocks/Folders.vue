@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, ref } from "vue";
 import type { Folder } from "../ui/folder/Folder.vue";
 import FolderComponent from "../ui/folder/Folder.vue";
 
@@ -40,13 +41,83 @@ const folders: Folder[] = [
     name: "Smlouvy",
     documents: [],
   },
+  {
+    id: 6,
+    name: "Cestování",
+    documents: [
+      { id: 10, name: "Letenky", type: "pdf" },
+      { id: 11, name: "Itinerář", type: "text" },
+      { id: 12, name: "Fotky z dovolené", type: "image" },
+    ],
+  },
+  {
+    id: 7,
+    name: "Škola",
+    documents: [
+      { id: 13, name: "Zápisky z přednášek", type: "text" },
+      { id: 14, name: "Prezentace na seminář", type: "presentation" },
+    ],
+  },
+  {
+    id: 8,
+    name: "Hudba",
+    documents: [
+      { id: 15, name: "Playlist 2024", type: "text" },
+      { id: 16, name: "Noty", type: "pdf" },
+    ],
+  },
+  {
+    id: 9,
+    name: "Recepty",
+    documents: [
+      { id: 17, name: "Babiččin koláč", type: "text" },
+      { id: 18, name: "Fotka dortu", type: "image" },
+    ],
+  },
+  {
+    id: 10,
+    name: "Sport",
+    documents: [
+      { id: 19, name: "Tréninkový plán", type: "spreadsheet" },
+      { id: 20, name: "Výsledky závodů", type: "pdf" },
+    ],
+  },
 ];
+
+const size = ref<"sm" | "md" | "lg">("sm");
+
+const gridSize = computed(() => {
+  switch (size.value) {
+    case "sm":
+      return "grid-cols-[repeat(auto-fit,minmax(120px,1fr))]";
+    case "md":
+      return "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]";
+    case "lg":
+      return "grid-cols-[repeat(auto-fit,minmax(180px,1fr))]";
+    default:
+      return "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]";
+  }
+});
 </script>
 <template>
   <div class="w-full">
-    <h2 class="text-2xl font-bold mb-4">Folders</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-      <FolderComponent v-for="f in folders" :key="f.id" :folder="f" size="lg" />
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-bold mb-4">Folders</h2>
+      <div>
+        <select v-model="size" class="border rounded p-2">
+          <option value="sm">Small</option>
+          <option value="md">Medium</option>
+          <option value="lg">Large</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid gap-4" :class="gridSize">
+      <FolderComponent
+        v-for="f in folders"
+        :key="f.id"
+        :folder="f"
+        :size="size"
+      />
     </div>
   </div>
 </template>

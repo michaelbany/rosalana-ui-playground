@@ -103,7 +103,7 @@ const isHovered = ref(false);
         >
           <motion.div
             class="absolute"
-            v-if="props.folder.documents[1]"
+            v-if="props.folder.documents[2]"
             :animate="
               isHovered
                 ? { rotate: 15, x: '-35%', y: '-40%' }
@@ -111,11 +111,11 @@ const isHovered = ref(false);
             "
             :transition="{ delay: 0.1, type: 'tween', duration: 0.2 }"
           >
-            <DocumentComponent :document="props.folder.documents[1]" />
+            <DocumentComponent :document="props.folder.documents[2]" :size="props.size" />
           </motion.div>
 
           <motion.div
-            v-if="props.folder.documents[2]"
+            v-if="props.folder.documents[1]"
             class="absolute"
             :animate="
               isHovered
@@ -124,16 +124,15 @@ const isHovered = ref(false);
             "
             :transition="{ delay: 0.05, type: 'tween', duration: 0.2 }"
           >
-            <DocumentComponent :document="props.folder.documents[2]" />
+            <DocumentComponent :document="props.folder.documents[1]" :size="props.size" />
           </motion.div>
 
           <motion.div
             class="absolute -translate-x-1/2 -translate-y-1/2"
             v-if="props.folder.documents[0]"
           >
-            <DocumentComponent :document="props.folder.documents[0]" />
+            <DocumentComponent :document="props.folder.documents[0]" :size="props.size" />
           </motion.div>
-          <!-- <DocumentComponent :document="props.folder.documents[1]" /> -->
         </motion.div>
       </div>
 
