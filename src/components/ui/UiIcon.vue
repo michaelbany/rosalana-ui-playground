@@ -24,8 +24,6 @@ const iconKey = computed(() =>
 </script>
 
 <template>
-  <!-- • inline-block kvůli zarovnání s textem
-       • [width]/[height] nastavíme jen když má uživatel size prop -->
   <Icon
     :icon="iconKey"
     v-bind="

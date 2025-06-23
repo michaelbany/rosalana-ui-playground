@@ -3,6 +3,7 @@ import { motion } from "motion-v";
 import { computed, onUnmounted, ref } from "vue";
 import UiButton from "../button/UiButton.vue";
 import UiIcon from "../UiIcon.vue";
+import type { FinderColor, FinderSize } from "@/components/blocks/Finder.vue";
 
 export type Document = {
   id: number | string;
@@ -13,8 +14,8 @@ export type Document = {
 const props = withDefaults(
   defineProps<{
     document: Document;
-    size?: "sm" | "md" | "lg";
-    color?: "blue" | "green" | "red" | "orange" | "gray";
+    size?: FinderSize;
+    color?: FinderColor;
     selected?: boolean;
     preventSelect?: boolean;
   }>(),
@@ -96,61 +97,15 @@ const iconSize = computed(() => {
 });
 
 const colors = computed(() => {
-  switch (props.color) {
-    case "blue":
-      return {
-        icon: "text-blue-300",
-        grid: "stroke-blue-50 fill-blue-100",
-        stroke: "stroke-blue-200",
-      };
-    case "green":
-      return {
-        icon: "text-green-300",
-        grid: "stroke-green-50 fill-green-100",
-        stroke: "stroke-green-200",
-      };
-    case "red":
-      return {
-        icon: "text-red-300",
-        grid: "stroke-red-50 fill-red-100",
-        stroke: "stroke-red-200",
-      };
-    case "orange":
-      return {
-        icon: "text-orange-300",
-        grid: "stroke-orange-50 fill-orange-100",
-        stroke: "stroke-orange-200",
-      };
-    case "gray":
-      return {
-        icon: "text-gray-300",
-        grid: "stroke-gray-50 fill-gray-100",
-        stroke: "stroke-gray-200",
-      };
-    default:
-      return {
-        icon: "text-blue-300",
-        grid: "stroke-blue-50 fill-blue-100",
-        stroke: "stroke-blue-200",
-      };
+  return {
+    icon: `text-${props.color}-300`,
+    grid: `stroke-${props.color}-50 fill-${props.color}-100`,
+    stroke: `stroke-${props.color}-200`,
   }
 });
 
 const selectColor = computed(() => {
-  switch (props.color) {
-    case "blue":
-      return "bg-blue-500 text-white";
-    case "green":
-      return "bg-green-500 text-white";
-    case "red":
-      return "bg-red-500 text-white";
-    case "orange":
-      return "bg-orange-500 text-white";
-    case "gray":
-      return "bg-gray-500 text-white";
-    default:
-      return "bg-blue-500 text-white";
-  }
+  return `bg-${props.color}-500 text-white`;
 });
 
 const isHovered = ref(false);

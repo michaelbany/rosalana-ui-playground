@@ -5,18 +5,31 @@ import FolderComponent from "../ui/folder/Folder.vue";
 import DocumentComponent, { type Document } from "../ui/document/Document.vue";
 import UiInput from "../ui/input/UiInput.vue";
 
+export type FinderColor = "blue" | "green" | "red" | "orange" | "gray";
+export type FinderSize = "sm" | "md" | "lg";
+
 export type FolderOrDocument =
   | {
       type: "folder";
-      color?: "blue" | "green" | "red" | "orange" | "gray";
+      color?: FinderColor;
       item: Folder;
+      tags?: FinderTag[];
     }
   | {
       type: "document";
-      color?: "blue" | "green" | "red" | "orange" | "gray";
+      color?: FinderColor;
       item: Document;
+      tags?: FinderTag[];
     }
   | { type: "empty"; item: null };
+
+
+
+export type FinderTag = {
+  name: string;
+  color: FinderColor;
+  icon?: string;
+}
 
 const props = withDefaults(
   defineProps<{
@@ -171,6 +184,7 @@ const gridSize = computed(() => {
           :folder="item.item"
           :color="item.color || color"
           :size="size"
+          :tags="item.tags || []"
           :selected="selectedItems.includes(item)"
           @select="(e) => handleSelectItem(item, e)"
           @click="emit('click', item.item)"

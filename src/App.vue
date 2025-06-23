@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import Container from "./components/Container.vue";
-import EditorComponent from "./components/ui/editor/EditorComponent.vue";
-import Folders, { type FolderOrDocument } from "./components/blocks/Finder.vue";
+/** @ts-ignore */
+import Editor from "./components/ui/editor/Editor.vue";
+import Finder, { type FolderOrDocument } from "./components/blocks/Finder.vue";
 
 const items: FolderOrDocument[] = [
   {
@@ -16,6 +17,7 @@ const items: FolderOrDocument[] = [
         { id: 4, name: "Profile Photo.png", type: "image" },
       ],
     },
+    tags: [{ name: "urgent", color: "red", icon: "lucide:alert-triangle" }],
   },
   {
     type: "folder",
@@ -29,6 +31,7 @@ const items: FolderOrDocument[] = [
         { id: 6, name: "Fotka na pas.png", type: "image" },
       ],
     },
+    tags: [{ name: "to review", color: "orange", icon: "lucide:eye" }],
   },
   {
     type: "folder",
@@ -50,6 +53,10 @@ const items: FolderOrDocument[] = [
         { id: 9, name: "Firemní prezentace.pptx", type: "presentation" },
       ],
     },
+    tags: [
+      { name: "in progress", color: "blue", icon: "lucide:loader" },
+      { name: "final", color: "green", icon: "lucide:file-check" },
+    ],
   },
   {
     type: "folder",
@@ -58,6 +65,7 @@ const items: FolderOrDocument[] = [
       name: "Smlouvy",
       documents: [],
     },
+    tags: [{ name: "important", color: "orange", icon: "lucide:star" }],
   },
   {
     type: "folder",
@@ -142,15 +150,15 @@ const items: FolderOrDocument[] = [
 <template>
   <div class="flex flex-col items-center p-8 max-w-5xl mx-auto">
     <Container name="Editor">
-      <EditorComponent />
+      <Editor />
     </Container>
 
     <Container name="Folder">
-      <Folders 
+      <Finder
         :items="items"
         @click="(i) => console.log('clicked', i)"
         @select="(i) => console.log('Selected:', i)"
-        />
+      />
     </Container>
   </div>
 </template>

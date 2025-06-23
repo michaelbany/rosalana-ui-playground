@@ -4,6 +4,13 @@ import UiButton from "../button/UiButton.vue";
 import { motion } from "motion-v";
 import DocumentComponent from "./FolderDocument.vue";
 import type { Document } from "../document/Document.vue";
+import type {
+  FinderColor,
+  FinderSize,
+  FinderTag,
+} from "@/components/blocks/Finder.vue";
+import { getTheme } from "@/components/blocks/colors";
+import UiIcon from "../UiIcon.vue";
 
 export type Folder = {
   id: number;
@@ -14,8 +21,9 @@ export type Folder = {
 const props = withDefaults(
   defineProps<{
     folder: Folder;
-    size?: "sm" | "md" | "lg";
-    color?: "blue" | "green" | "red" | "orange" | "gray";
+    size?: FinderSize;
+    tags?: FinderTag[];
+    color?: FinderColor;
     selected?: boolean;
     preventSelect?: boolean;
   }>(),
@@ -69,115 +77,16 @@ const sizes = computed(() => {
 const isHovered = ref(false);
 
 const folderColor = computed(() => {
-  switch (props.color) {
-    case "blue":
-      return {
-        back: [
-          "oklch(62.3% 0.214 259.815)", // blue-500
-          "oklch(42.4% 0.199 265.638)", // blue-600
-        ],
-        front: [
-          "oklch(70.7% 0.165 254.624)", // blue-400
-          "oklch(62.3% 0.214 259.815)", // blue-500
-        ],
-        stroke: [
-          "oklch(97% 0.014 254.604)", // blue-50
-          "oklch(93.2% 0.032 255.585)", // blue-100
-        ],
-      };
-    case "green":
-      return {
-        back: [
-          "oklch(62.3% 0.19 145)", // emerald-500
-          "oklch(49.2% 0.16 145)", // emerald-600
-        ],
-        front: [
-          "oklch(70.7% 0.15 145)", // emerald-400
-          "oklch(62.3% 0.19 145)", // emerald-500
-        ],
-        stroke: [
-          "oklch(97% 0.015 145)", // emerald-50
-          "oklch(93.2% 0.035 145)", // emerald-100
-        ],
-      };
-    case "red":
-      return {
-        back: [
-          "oklch(62.3% 0.22 29.2)", // red-500
-          "oklch(49.2% 0.19 29.2)", // red-600
-        ],
-        front: [
-          "oklch(70.7% 0.17 29.2)", // red-400
-          "oklch(62.3% 0.22 29.2)", // red-500
-        ],
-        stroke: [
-          "oklch(97% 0.02 29.2)", // red-50
-          "oklch(93.2% 0.04 29.2)", // red-100
-        ],
-      };
-    case "orange":
-      return {
-        back: [
-          "oklch(80% 0.18 60)", // orange-500
-          "oklch(70% 0.16 60)", // orange-600
-        ],
-        front: [
-          "oklch(88% 0.14 60)", // orange-400
-          "oklch(80% 0.18 60)", // orange-500
-        ],
-        stroke: [
-          "oklch(98% 0.02 60)", // orange-50
-          "oklch(95% 0.04 60)", // orange-100
-        ],
-      };
-    case "gray":
-      return {
-        back: [
-          "oklch(80% 0.01 270)", // gray-400
-          "oklch(65% 0.01 270)", // gray-500
-        ],
-        front: [
-          "oklch(90% 0.008 270)", // gray-200
-          "oklch(80% 0.01 270)", // gray-400
-        ],
-        stroke: [
-          "oklch(98% 0.005 270)", // gray-50
-          "oklch(93% 0.008 270)", // gray-100
-        ],
-      };
-    default:
-      return {
-        back: [
-          "oklch(62.3% 0.214 259.815)", // blue-500
-          "oklch(42.4% 0.199 265.638)", // blue-600
-        ],
-        front: [
-          "oklch(70.7% 0.165 254.624)", // blue-400
-          "oklch(62.3% 0.214 259.815)", // blue-500
-        ],
-        stroke: [
-          "oklch(97% 0.014 254.604)", // blue-50
-          "oklch(93.2% 0.032 255.585)", // blue-100
-        ],
-      };
-  }
+  const color = getTheme(props.color);
+  return {
+    back: [color["500"], color["600"]],
+    front: [color["400"], color["500"]],
+    stroke: [color["50"], color["100"]],
+  };
 });
 
 const selectColor = computed(() => {
-  switch (props.color) {
-    case "blue":
-      return "bg-blue-500 text-white";
-    case "green":
-      return "bg-green-500 text-white";
-    case "red":
-      return "bg-red-500 text-white";
-    case "orange":
-      return "bg-orange-500 text-white";
-    case "gray":
-      return "bg-gray-500 text-white";
-    default:
-      return "bg-blue-500 text-white";
-  }
+  return `bg-${props.color}-500 text-white`;
 });
 </script>
 
@@ -210,13 +119,25 @@ const selectColor = computed(() => {
         "
       >
         <defs>
-          <linearGradient :id="`back-gradient-${folder.id}`" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient
+            :id="`back-gradient-${folder.id}`"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1"
+          >
             <stop offset="0%" :stop-color="folderColor?.back[0]" />
             <!-- blue-500 -->
             <stop offset="100%" :stop-color="folderColor?.back[1]" />
             <!-- blue-600 -->
           </linearGradient>
-          <linearGradient :id="`back-stroke-${folder.id}`" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient
+            :id="`back-stroke-${folder.id}`"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1"
+          >
             <stop offset="0%" :stop-color="folderColor?.stroke[0]" />
             <!-- blue-50 -->
             <stop offset="100%" :stop-color="folderColor?.stroke[1]" />
@@ -312,13 +233,25 @@ const selectColor = computed(() => {
         "
       >
         <defs>
-          <linearGradient :id="`front-gradient-${folder.id}`" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient
+            :id="`front-gradient-${folder.id}`"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1"
+          >
             <stop offset="0%" :stop-color="folderColor?.front[0]" />
             <!-- blue-400 -->
             <stop offset="100%" :stop-color="folderColor?.front[1]" />
             <!-- blue-600 -->
           </linearGradient>
-          <linearGradient :id="`front-stroke-${folder.id}`" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient
+            :id="`front-stroke-${folder.id}`"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1"
+          >
             <stop offset="0%" :stop-color="folderColor?.stroke[0]" />
             <!-- blue-50 -->
             <stop offset="100%" :stop-color="folderColor?.stroke[1]" />
@@ -334,6 +267,32 @@ const selectColor = computed(() => {
           stroke-linejoin="round"
           d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
         />
+
+        <g
+          v-for="(tag, i) in props.tags?.slice(0, 3) || []"
+          :key="i"
+          :transform="`translate(${18 - 6 * i}, 16)`"
+        >
+          <circle
+            cx="0"
+            cy="0"
+            r="2.5"
+            stroke-width="0.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            :stroke="`url(#front-stroke-${folder.id})`"
+            :fill="getTheme(tag.color)['200']"
+          />
+          <UiIcon
+            v-if="tag.icon"
+            :name="tag.icon"
+            width="3"
+            height="3"
+            :style="{color: getTheme(tag.color)['500']}"
+            x="-1.5"
+            y="-1.5"
+          />
+        </g>
       </motion.svg>
     </motion.div>
 
