@@ -31,7 +31,7 @@ const items: FolderOrDocument[] = [
         { id: 6, name: "Fotka na pas.png", type: "image" },
       ],
     },
-    tags: [{ name: "to review", color: "orange", icon: "lucide:eye" }],
+    tags: [{ name: "to review", color: "blue", icon: "lucide:eye" }],
   },
   {
     type: "folder",
@@ -53,10 +53,7 @@ const items: FolderOrDocument[] = [
         { id: 9, name: "Firemní prezentace.pptx", type: "presentation" },
       ],
     },
-    tags: [
-      { name: "in progress", color: "blue", icon: "lucide:loader" },
-      { name: "final", color: "green", icon: "lucide:file-check" },
-    ],
+    tags: [{ name: "in progress", color: "gray", icon: "lucide:loader" }],
   },
   {
     type: "folder",
@@ -79,6 +76,10 @@ const items: FolderOrDocument[] = [
         { id: 12, name: "Fotky z dovolené.png", type: "image" },
       ],
     },
+    tags: [
+      { name: "to review", color: "blue", icon: "lucide:eye" },
+      { name: "important", color: "orange", icon: "lucide:star" },
+    ],
   },
   {
     type: "folder",
@@ -129,10 +130,7 @@ const items: FolderOrDocument[] = [
     type: "document",
     color: "red",
     item: { id: 21, name: "Poznámky.txt", type: "text" },
-    tags: [
-      { name: "in progress", color: "blue", icon: "lucide:loader" },
-      { name: "final", color: "green", icon: "lucide:file-check" },
-    ],
+    tags: [{ name: "in progress", color: "gray", icon: "lucide:loader" }],
   },
   {
     type: "document",
@@ -140,11 +138,8 @@ const items: FolderOrDocument[] = [
   },
   {
     type: "document",
-    tags: [
-      { name: "in progress", color: "green", icon: "lucide:check" },
-      { name: "in progress", color: "green", icon: "lucide:check" },
-    ],
     item: { id: 23, name: "Prezentace.pptx", type: "presentation" },
+    tags: [{ name: "in progress", color: "green", icon: "lucide:check" }],
   },
   {
     type: "document",
