@@ -3,7 +3,12 @@ import { motion } from "motion-v";
 import { computed, onUnmounted, ref } from "vue";
 import UiButton from "../button/UiButton.vue";
 import UiIcon from "../UiIcon.vue";
-import type { FinderColor, FinderSize } from "@/components/blocks/Finder.vue";
+import type {
+  FinderColor,
+  FinderSize,
+  FinderTag,
+} from "@/components/blocks/Finder.vue";
+import { getTheme } from "@/components/blocks/colors";
 
 export type Document = {
   id: number | string;
@@ -15,6 +20,7 @@ const props = withDefaults(
   defineProps<{
     document: Document;
     size?: FinderSize;
+    tags?: FinderTag[];
     color?: FinderColor;
     selected?: boolean;
     preventSelect?: boolean;
@@ -101,7 +107,7 @@ const colors = computed(() => {
     icon: `text-${props.color}-300`,
     grid: `stroke-${props.color}-50 fill-${props.color}-100`,
     stroke: `stroke-${props.color}-200`,
-  }
+  };
 });
 
 const selectColor = computed(() => {
@@ -164,6 +170,32 @@ const isHovered = ref(false);
             :fill="`url(#grid-${document.id})`"
           />
           <path d="M14 2v4a2 2 0 0 0 2 2h4" fill="url(#grid)" />
+        </g>
+        <g
+          v-for="(tag, i) in props.tags?.slice(0, 2) || []"
+          :key="i"
+          :transform="`translate(${16.5 - 6 * i}, 18.5)`"
+        >
+          <circle
+            cx="0"
+            cy="0"
+            r="2.5"
+            stroke-width="0.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            :stroke="getTheme(tag.color)['50']"
+            :fill="tag.icon ? getTheme(tag.color)['200'] : getTheme(tag.color)['400']"
+          />
+
+          <UiIcon
+            v-if="tag.icon"
+            :name="tag.icon"
+            width="3"
+            height="3"
+            :style="{ color: getTheme(tag.color)['500'] }"
+            x="-1.5"
+            y="-1.5"
+          />
         </g>
       </svg>
     </motion.div>

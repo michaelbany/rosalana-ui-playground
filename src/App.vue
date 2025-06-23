@@ -129,6 +129,10 @@ const items: FolderOrDocument[] = [
     type: "document",
     color: "red",
     item: { id: 21, name: "Poznámky.txt", type: "text" },
+    tags: [
+      { name: "in progress", color: "blue", icon: "lucide:loader" },
+      { name: "final", color: "green", icon: "lucide:file-check" },
+    ],
   },
   {
     type: "document",
@@ -136,7 +140,10 @@ const items: FolderOrDocument[] = [
   },
   {
     type: "document",
-
+    tags: [
+      { name: "in progress", color: "green", icon: "lucide:check" },
+      { name: "in progress", color: "green", icon: "lucide:check" },
+    ],
     item: { id: 23, name: "Prezentace.pptx", type: "presentation" },
   },
   {

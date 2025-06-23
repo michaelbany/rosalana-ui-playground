@@ -195,6 +195,7 @@ const gridSize = computed(() => {
           :document="item.item"
           :size="size"
           :color="item.color || color"
+          :tags="item.tags || []"
           :selected="selectedItems.includes(item)"
           @select="(e) => handleSelectItem(item, e)"
           @click="emit('click', item.item)"
