@@ -3,6 +3,8 @@ import Container from "./components/Container.vue";
 /** @ts-ignore */
 import Editor from "./components/ui/editor/Editor.vue";
 import Finder, { type FolderOrDocument } from "./components/blocks/Finder.vue";
+import ContextMenu from "./components/blocks/ContextMenu.vue";
+import TestComponent from "./components/ui/test/TestComponent.vue";
 
 const items: FolderOrDocument[] = [
   {
@@ -150,17 +152,25 @@ const items: FolderOrDocument[] = [
 </script>
 
 <template>
-  <div class="flex flex-col items-center p-8 max-w-5xl mx-auto">
-    <Container name="Editor">
-      <Editor />
-    </Container>
+  <ContextMenu>
+    <div class="w-full h-full">
+      <div class="flex flex-col items-center p-8 max-w-5xl mx-auto">
+        <Container name="Editor">
+          <Editor />
+        </Container>
 
-    <Container name="Folder">
-      <Finder
-        :items="items"
-        @click="(i) => console.log('clicked', i)"
-        @select="(i) => console.log('Selected:', i)"
-      />
-    </Container>
-  </div>
+        <Container name="Context Menu">
+          <TestComponent />
+        </Container>
+
+        <Container name="Folder">
+          <Finder
+            :items="items"
+            @click="(i) => console.log('clicked', i)"
+            @select="(i) => console.log('Selected:', i)"
+          />
+        </Container>
+      </div>
+    </div>
+  </ContextMenu>
 </template>
