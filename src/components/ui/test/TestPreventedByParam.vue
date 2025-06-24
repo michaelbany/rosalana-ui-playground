@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import { useContextMenu } from "@/composables/useContextMenu";
-import { onMounted, ref } from "vue";
-</script>
 <template>
   <div
     data-prevent-context-menu
