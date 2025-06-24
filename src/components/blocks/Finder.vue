@@ -142,9 +142,17 @@ const gridSize = computed(() => {
       return "grid-cols-[repeat(auto-fit,150px)]";
   }
 });
+
+const finderRef = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+  if (finderRef.value) {
+    useContextMenu(finderRef.value).prevent();
+  }
+});
 </script>
 <template>
-  <div class="w-full">
+  <div class="w-full" ref="finderRef">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-bold mb-4">Folders</h2>
       <div class="space-x-2">

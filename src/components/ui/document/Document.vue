@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { motion } from "motion-v";
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import UiButton from "../button/UiButton.vue";
 import UiIcon from "../UiIcon.vue";
 import type {
@@ -9,6 +9,7 @@ import type {
   FinderTag,
 } from "@/components/blocks/Finder.vue";
 import { getTheme } from "@/components/blocks/colors";
+import { useContextMenu } from "@/composables/useContextMenu";
 
 export type Document = {
   id: number | string;
@@ -115,9 +116,29 @@ const selectColor = computed(() => {
 });
 
 const isHovered = ref(false);
+
+const documentRef = ref<HTMLElement | null>(null);
+const unwrap = (r: any) =>
+  r instanceof HTMLElement ? r : (r?.$el as HTMLElement | null);
+
+onMounted(() => {
+  const el = unwrap(documentRef.value);
+  if (el) {
+    useContextMenu(el).set([
+      { label: `${props.document.name} Document` },
+      { divider: true },
+      { title: "Open", icon: "ph:folder-open", shortcut: "Enter" },
+      { title: "Rename", icon: "ph:pencil-simple", shortcut: "F2" },
+      { title: "Delete", icon: "ph:trash", shortcut: "Delete" },
+      { divider: true },
+      { title: "Properties", icon: "ph:file-text", shortcut: "Ctrl+I" },
+    ]);
+  }
+});
 </script>
 <template>
   <UiButton
+    ref="documentRef"
     class="h-auto flex-col gap-0 cursor-pointer select-none"
     variant="ghost"
     :aria-label="`${props.document.name}, ${props.document.type}`"
@@ -184,7 +205,9 @@ const isHovered = ref(false);
             stroke-linecap="round"
             stroke-linejoin="round"
             :stroke="getTheme(tag.color)['50']"
-            :fill="tag.icon ? getTheme(tag.color)['200'] : getTheme(tag.color)['400']"
+            :fill="
+              tag.icon ? getTheme(tag.color)['200'] : getTheme(tag.color)['400']
+            "
           />
 
           <UiIcon

@@ -48,19 +48,25 @@ export function useContextMenu(reference: HTMLElement | null) {
       current = current.parentElement;
     }
     return current || defaultKey;
-  }
-  
-    const getOrDefault = (ref: HTMLElement | null): Data => {
-      const bubbleRef = bubbleReference(ref);
-      return (bubbleRef && contextMenuState.get(bubbleRef)) || contextMenuState.get(defaultKey)!;
-    };
+  };
 
-
+  const getOrDefault = (ref: HTMLElement | null): Data => {
+    const bubbleRef = bubbleReference(ref);
+    return (
+      (bubbleRef && contextMenuState.get(bubbleRef)) ||
+      contextMenuState.get(defaultKey)!
+    );
+  };
 
   const get = () => getOrDefault(reference);
 
   const set = (items: ContextMenu[]) => {
     if (reference) contextMenuState.set(reference, { items, prevent: false });
+  };
+
+  const setDefault = () => {
+    if (reference)
+      contextMenuState.set(reference, { items: defaultItems, prevent: false });
   };
 
   const prevent = (value = true) => {
@@ -76,6 +82,7 @@ export function useContextMenu(reference: HTMLElement | null) {
   return {
     get,
     set,
+    setDefault,
     prevent,
     unsubscribe,
   };

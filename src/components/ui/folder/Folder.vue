@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import UiButton from "../button/UiButton.vue";
 import { motion } from "motion-v";
 import DocumentComponent from "./FolderDocument.vue";
@@ -11,6 +11,7 @@ import type {
 } from "@/components/blocks/Finder.vue";
 import { getTheme } from "@/components/blocks/colors";
 import UiIcon from "../UiIcon.vue";
+import { useContextMenu } from "@/composables/useContextMenu";
 
 export type Folder = {
   id: number;
@@ -88,10 +89,30 @@ const folderColor = computed(() => {
 const selectColor = computed(() => {
   return `bg-${props.color}-500 text-white`;
 });
+
+const folderRef = ref<HTMLElement | null>(null);
+const unwrap = (r: any) =>
+  r instanceof HTMLElement ? r : (r?.$el as HTMLElement | null)
+
+onMounted(() => {
+  const el = unwrap(folderRef.value);
+  if (el) {
+    useContextMenu(el).set([
+      { label: `${props.folder.name} Folder` },
+      { divider: true },
+      { title: "Open", icon: "ph:folder-open", shortcut: "Enter" },
+      { title: "Rename", icon: "ph:pencil-simple", shortcut: "F2" },
+      { title: "Delete", icon: "ph:trash", shortcut: "Delete" },
+      { divider: true },
+      { title: "Properties", icon: "ph:file-text", shortcut: "Ctrl+I" },
+    ]);
+  }
+});
 </script>
 
 <template>
   <UiButton
+    ref="folderRef"
     class="h-auto flex-col gap-0 cursor-pointer select-none"
     :aria-label="`${props.folder.name}, ${props.folder.documents.length} documents`"
     variant="ghost"
