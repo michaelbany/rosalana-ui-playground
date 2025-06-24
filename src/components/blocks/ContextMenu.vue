@@ -23,7 +23,9 @@ function handleTrigger(e: MouseEvent) {
     null;
 
   const { items, prevent } = useContextMenu(target).get();
-  menu.value = prevent ? [] : items;
+  const itemPrevent =
+    target?.dataset.preventContextMenu !== undefined || prevent;
+  menu.value = itemPrevent ? [] : items;
 }
 
 const menu = ref<ContextMenuType[]>([]);

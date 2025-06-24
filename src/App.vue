@@ -7,6 +7,7 @@ import ContextMenu from "./components/blocks/ContextMenu.vue";
 import TestComponent from "./components/ui/test/TestComponent.vue";
 import TestComponent2 from "./components/ui/test/TestComponent2.vue";
 import TestWithText from "./components/ui/test/TestWithText.vue";
+import TestPreventedByParam from "./components/ui/test/TestPreventedByParam.vue";
 
 const items: FolderOrDocument[] = [
   {
@@ -166,6 +167,7 @@ const items: FolderOrDocument[] = [
           <TestComponent />
           <TestComponent2 />
           <TestWithText />
+          <TestPreventedByParam />
         </Container>
 
         <Container name="Folder">
