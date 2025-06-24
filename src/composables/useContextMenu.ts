@@ -41,10 +41,18 @@ const defaultItems: ContextMenu[] = [
 contextMenuState.set(defaultKey, { items: defaultItems, prevent: false });
 
 export function useContextMenu(reference: HTMLElement | null) {
-  const bubbleReference = (ref: HTMLElement | null): HTMLElement | {} => {
+  const bubbleReference = (
+    ref: HTMLElement | null
+  ): HTMLElement | {} | null => {
     if (!ref) return defaultKey;
     let current: HTMLElement | null = ref;
-    while (current && !contextMenuState.has(current)) {
+    while (
+      (current && !contextMenuState.has(current)) ||
+      current === document.body
+    ) {
+      if (current.dataset?.preventContextMenu !== undefined) {
+        return null;
+      }
       current = current.parentElement;
     }
     return current || defaultKey;
@@ -52,10 +60,14 @@ export function useContextMenu(reference: HTMLElement | null) {
 
   const getOrDefault = (ref: HTMLElement | null): Data => {
     const bubbleRef = bubbleReference(ref);
-    return (
-      (bubbleRef && contextMenuState.get(bubbleRef)) ||
-      contextMenuState.get(defaultKey)!
-    );
+    if (bubbleRef === null) {
+      return { items: [], prevent: true };
+    } else {
+      return (
+        (bubbleRef && contextMenuState.get(bubbleRef)) ||
+        contextMenuState.get(defaultKey)!
+      );
+    }
   };
 
   const get = () => getOrDefault(reference);

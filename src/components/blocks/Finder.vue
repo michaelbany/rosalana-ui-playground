@@ -147,12 +147,20 @@ const finderRef = ref<HTMLElement | null>(null);
 
 onMounted(() => {
   if (finderRef.value) {
-    useContextMenu(finderRef.value).prevent();
+    useContextMenu(finderRef.value).set([
+      {label: "Finder Menu"},
+      {divider: true},
+      {title: "New Folder", icon: "lucide:folder-plus", shortcut: "⌘N"},
+      {title: "New Document", icon: "lucide:file-plus", shortcut: "⌘D"},
+      {divider: true},
+      {title: "Refresh", icon: "lucide:refresh", shortcut: "F5"},
+      {title: "Settings", icon: "lucide:settings", shortcut: "⌘,"},
+    ]);
   }
 });
 </script>
 <template>
-  <div class="w-full" ref="finderRef">
+  <div class="w-full" data-prevent-context-menu>
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-bold mb-4">Folders</h2>
       <div class="space-x-2">
@@ -173,6 +181,7 @@ onMounted(() => {
 
     <UiInput
       class="mb-4 w-min text-sm"
+      data-prevent-context-menu
       placeholder="Search..."
       :aria-label="'Search documents and folders'"
       v-model="search"
@@ -183,6 +192,7 @@ onMounted(() => {
     <div
       v-if="items.length > 0 && !items.every((item) => item.type === 'empty')"
       class="grid gap-4 justify-between"
+       ref="finderRef"
       :class="gridSize"
       @click="handleDeselect"
     >
