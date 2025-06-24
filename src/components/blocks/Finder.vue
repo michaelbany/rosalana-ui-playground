@@ -24,13 +24,11 @@ export type FolderOrDocument =
     }
   | { type: "empty"; item: null };
 
-
-
 export type FinderTag = {
   name: string;
   color: FinderColor;
   icon?: string;
-}
+};
 
 const props = withDefaults(
   defineProps<{
@@ -148,13 +146,13 @@ const finderRef = ref<HTMLElement | null>(null);
 onMounted(() => {
   if (finderRef.value) {
     useContextMenu(finderRef.value).set([
-      {label: "Finder Menu"},
-      {divider: true},
-      {title: "New Folder", icon: "lucide:folder-plus", shortcut: "⌘N"},
-      {title: "New Document", icon: "lucide:file-plus", shortcut: "⌘D"},
-      {divider: true},
-      {title: "Refresh", icon: "lucide:refresh", shortcut: "F5"},
-      {title: "Settings", icon: "lucide:settings", shortcut: "⌘,"},
+      { label: "Finder Menu" },
+      { divider: true },
+      { title: "New Folder", icon: "lucide:folder-plus", shortcut: "⌘N" },
+      { title: "New Document", icon: "lucide:file-plus", shortcut: "⌘D" },
+      { divider: true },
+      { title: "Refresh", icon: "lucide:refresh", shortcut: "F5" },
+      { title: "Settings", icon: "lucide:settings", shortcut: "⌘," },
     ]);
   }
 });
@@ -181,7 +179,6 @@ onMounted(() => {
 
     <UiInput
       class="mb-4 w-min text-sm"
-      data-prevent-context-menu
       placeholder="Search..."
       :aria-label="'Search documents and folders'"
       v-model="search"
@@ -192,7 +189,7 @@ onMounted(() => {
     <div
       v-if="items.length > 0 && !items.every((item) => item.type === 'empty')"
       class="grid gap-4 justify-between"
-       ref="finderRef"
+      ref="finderRef"
       :class="gridSize"
       @click="handleDeselect"
     >
