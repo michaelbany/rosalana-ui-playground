@@ -37,16 +37,16 @@ const menu = ref<ContextMenuType[]>([]);
       <slot />
     </ContextMenuTrigger>
 
-    <ContextMenuContent class="w-64" v-if="menu.length">
+    <ContextMenuContent class="w-54" v-if="menu.length">
       <template v-for="(item, i) in menu" :key="i">
-        <ContextMenuLabel v-if="item.label" inset>
+        <ContextMenuLabel v-if="item.label">
           {{ item.label }}
         </ContextMenuLabel>
         <ContextMenuSeparator v-else-if="item.divider" />
         <ContextMenuItem
-          inset
           v-else-if="item.title && !item.items"
           :disabled="item.disabled"
+          @select="item.action?.()"
         >
           {{ item.title }}
           <ContextMenuShortcut v-if="item.shortcut">
@@ -54,11 +54,15 @@ const menu = ref<ContextMenuType[]>([]);
           </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSub v-else-if="item.title && item.items">
-          <ContextMenuSubTrigger inset> {{ item.title }}</ContextMenuSubTrigger>
+          <ContextMenuSubTrigger> {{ item.title }}</ContextMenuSubTrigger>
           <ContextMenuSubContent class="w-48">
             <template v-for="(child, k) in item.items" :key="`child-${k}`">
               <ContextMenuSeparator v-if="child.divider" />
-              <ContextMenuItem v-else :disabled="child.disabled">
+              <ContextMenuItem
+                v-else
+                :disabled="child.disabled"
+                @select="item.action?.()"
+              >
                 {{ child.title }}
                 <ContextMenuShortcut v-if="child.shortcut">
                   {{ child.shortcut }}
