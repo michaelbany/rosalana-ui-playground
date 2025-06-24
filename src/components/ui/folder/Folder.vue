@@ -281,14 +281,16 @@ const selectColor = computed(() => {
             stroke-linecap="round"
             stroke-linejoin="round"
             :stroke="`url(#front-stroke-${folder.id})`"
-            :fill="tag.icon ? getTheme(tag.color)['200'] : getTheme(tag.color)['400']"
+            :fill="
+              tag.icon ? getTheme(tag.color)['200'] : getTheme(tag.color)['400']
+            "
           />
           <UiIcon
             v-if="tag.icon"
             :name="tag.icon"
             width="3"
             height="3"
-            :style="{color: getTheme(tag.color)['500']}"
+            :style="{ color: getTheme(tag.color)['500'] }"
             x="-1.5"
             y="-1.5"
           />

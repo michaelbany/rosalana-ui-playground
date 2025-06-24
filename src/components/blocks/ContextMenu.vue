@@ -11,50 +11,31 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import type { ContextMenuItem as ContextMenuItemType } from "@/composables/useContextMenu";
+import {
+  useContextMenu,
+  type ContextMenu as ContextMenuType,
+} from "@/composables/useContextMenu";
+import { ref } from "vue";
 
-const handleTrigger = (e: MouseEvent) => {
-  console.log("Context menu triggered", e);
-};
+function handleTrigger(e: MouseEvent) {
+  const target =
+    e.composedPath().find((n): n is HTMLElement => n instanceof HTMLElement) ??
+    null;
 
-const menu: ContextMenuItemType[] = [
-  { label: "My Account" },
-  { divider: true },
-  { title: "Profile", icon: "ph:user", shortcut: "⇧⌘P" },
-  { title: "Billing", icon: "ph:credit-card", shortcut: "⌘B" },
-  { title: "Settings", icon: "ph:gear", shortcut: "⌘S" },
-  { title: "Keyboard shortcuts", icon: "ph:keyboard", shortcut: "⌘K" },
-  { divider: true },
-  { title: "Team", icon: "ph:users", shortcut: "⇧⌘T" },
-  {
-    title: "Invite Users",
-    icon: "ph:user-plus",
-    items: [
-      { title: "Email", icon: "ph:envelope", shortcut: "⇧⌘E" },
-      { title: "Facebook", icon: "logos:facebook", shortcut: "⇧⌘F" },
-      { title: "Twitter", icon: "logos:twitter", shortcut: "⇧⌘T" },
-      { divider: true },
-      { title: "More", icon: "ph:plus-circle", disabled: true },
-    ],
-  },
-  { title: "Settings", icon: "ph:gear", shortcut: "⌘S" },
-  { title: "Keyboard shortcuts", icon: "ph:keyboard", shortcut: "⌘K" },
-  { divider: true },
-  { title: "Github", icon: "ph:github-logo" },
-  { title: "Support", icon: "ph:lifebuoy" },
-  { title: "API", icon: "ph:cloud", disabled: true },
-  { divider: true },
-  { title: "Sign out", icon: "ph:sign-out" },
-];
+  const { items, prevent } = useContextMenu(target).get();
+  menu.value = prevent ? [] : items;
+}
+
+const menu = ref<ContextMenuType[]>([]);
 </script>
 
 <template>
   <ContextMenu>
-    <ContextMenuTrigger as-child @click.right="handleTrigger">
+    <ContextMenuTrigger as-child @contextmenu="handleTrigger">
       <slot />
     </ContextMenuTrigger>
 
-    <ContextMenuContent class="w-64">
+    <ContextMenuContent class="w-64" v-if="menu.length">
       <template v-for="(item, i) in menu" :key="i">
         <ContextMenuLabel v-if="item.label" inset>
           {{ item.label }}

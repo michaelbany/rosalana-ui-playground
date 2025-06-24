@@ -5,6 +5,8 @@ import Editor from "./components/ui/editor/Editor.vue";
 import Finder, { type FolderOrDocument } from "./components/blocks/Finder.vue";
 import ContextMenu from "./components/blocks/ContextMenu.vue";
 import TestComponent from "./components/ui/test/TestComponent.vue";
+import TestComponent2 from "./components/ui/test/TestComponent2.vue";
+import TestWithText from "./components/ui/test/TestWithText.vue";
 
 const items: FolderOrDocument[] = [
   {
@@ -160,7 +162,10 @@ const items: FolderOrDocument[] = [
         </Container>
 
         <Container name="Context Menu">
+          
           <TestComponent />
+          <TestComponent2 />
+          <TestWithText />
         </Container>
 
         <Container name="Folder">

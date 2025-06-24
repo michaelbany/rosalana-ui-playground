@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import type { Folder } from "../ui/folder/Folder.vue";
 import FolderComponent from "../ui/folder/Folder.vue";
 import DocumentComponent, { type Document } from "../ui/document/Document.vue";
 import UiInput from "../ui/input/UiInput.vue";
+import { useContextMenu } from "@/composables/useContextMenu";
 
 export type FinderColor = "blue" | "green" | "red" | "orange" | "gray";
 export type FinderSize = "sm" | "md" | "lg";
