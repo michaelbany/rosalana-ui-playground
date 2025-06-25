@@ -1,5 +1,17 @@
 import { type Ref } from "vue";
 
+/**
+ * Upravit context menu na ref wrapper
+ * 
+ * API:
+ * const { menu } = useContextMenu(el);
+ * menu.value = [...];
+ * 
+ * Ref se vytvoří automaticky v useContextMenu.
+ * 
+ * Celé menu by mělo být Reactive<ContextMenu[]> aby bylo kompletně reaktivni i uvnitř hodnot.
+ */
+
 export type ContextMenu = {
   title?: string;
   icon?: string;
