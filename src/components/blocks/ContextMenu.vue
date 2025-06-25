@@ -15,7 +15,10 @@ import {
   useContextMenu,
   type ContextMenu as ContextMenuType,
 } from "@/composables/useContextMenu";
+import { useMouse } from "@vueuse/core";
 import { ref } from "vue";
+
+const { x: currentMouseX, y: currentMouseY } = useMouse();
 
 function handleTrigger(e: MouseEvent) {
   const target =
@@ -24,18 +27,35 @@ function handleTrigger(e: MouseEvent) {
 
   const { items, prevent } = useContextMenu(target).get();
   menu.value = prevent ? [] : items;
+
+  const isNearLastPosition =
+    Math.abs(currentMouseX.value - lastMousePosition.x) < 10 &&
+    Math.abs(currentMouseY.value - lastMousePosition.y) < 10;
+
+  if (!menu.value.length || (wasOpen.value && isNearLastPosition)) {
+    e.stopImmediatePropagation();
+    wasOpen.value = false;
+    lastMousePosition.x = 0;
+    lastMousePosition.y = 0;
+  } else {
+    wasOpen.value = true;
+    lastMousePosition.x = currentMouseX.value;
+    lastMousePosition.y = currentMouseY.value;
+  }
 }
 
 const menu = ref<ContextMenuType[]>([]);
+const wasOpen = ref(false);
+const lastMousePosition = { x: 0, y: 0 };
 </script>
 
 <template>
   <ContextMenu>
-    <ContextMenuTrigger as-child @contextmenu="handleTrigger">
+    <ContextMenuTrigger as-child @contextmenu.capture="handleTrigger">
       <slot />
     </ContextMenuTrigger>
 
-    <ContextMenuContent class="w-54" v-if="menu.length">
+    <ContextMenuContent class="w-54">
       <template v-for="(item, i) in menu" :key="i">
         <ContextMenuLabel v-if="item.label">
           {{ item.label }}
