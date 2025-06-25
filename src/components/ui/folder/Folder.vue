@@ -76,9 +76,10 @@ const sizes = computed(() => {
 });
 
 const isHovered = ref(false);
+const currentColor = ref<FinderColor>(props.color);
 
 const folderColor = computed(() => {
-  const color = getTheme(props.color);
+  const color = getTheme(currentColor.value);
   return {
     back: [color["500"], color["600"]],
     front: [color["400"], color["500"]],
@@ -87,12 +88,12 @@ const folderColor = computed(() => {
 });
 
 const selectColor = computed(() => {
-  return `bg-${props.color}-500 text-white`;
+  return `bg-${currentColor.value}-500 text-white`;
 });
 
 const folderRef = ref<HTMLElement | null>(null);
 const unwrap = (r: any) =>
-  r instanceof HTMLElement ? r : (r?.$el as HTMLElement | null)
+  r instanceof HTMLElement ? r : (r?.$el as HTMLElement | null);
 
 onMounted(() => {
   const el = unwrap(folderRef.value);
@@ -104,7 +105,41 @@ onMounted(() => {
       { title: "Rename", icon: "ph:pencil-simple", shortcut: "F2" },
       { title: "Delete", icon: "ph:trash", shortcut: "Delete" },
       { divider: true },
-      { title: "Properties", icon: "ph:file-text", shortcut: "Ctrl+I" },
+      {
+        title: "Colors",
+        items: [
+          {
+            title: "Blue",
+            icon: "ph:palette",
+            checked: computed(() => currentColor.value === "blue"),
+            action: () => (currentColor.value = "blue"),
+          },
+          {
+            title: "Red",
+            icon: "ph:palette",
+            checked: computed(() => currentColor.value === "red"),
+            action: () => (currentColor.value = "red"),
+          },
+          {
+            title: "Green",
+            icon: "ph:palette",
+            checked: computed(() => currentColor.value === "green"),
+            action: () => (currentColor.value = "green"),
+          },
+          {
+            title: "Orange",
+            icon: "ph:palette",
+            checked: computed(() => currentColor.value === "orange"),
+            action: () => (currentColor.value = "orange"),
+          },
+          {
+            title: "Gray",
+            icon: "ph:palette",
+            checked: computed(() => currentColor.value === "gray"),
+            action: () => (currentColor.value = "gray"),
+          },
+        ],
+      },
     ]);
   }
 });

@@ -1,3 +1,5 @@
+import { type Ref } from "vue";
+
 export type ContextMenu = {
   title?: string;
   icon?: string;
@@ -7,6 +9,8 @@ export type ContextMenu = {
   divider?: boolean;
   label?: string;
   items?: ContextMenu[];
+  selected?: boolean;
+  checked?: Ref<boolean> | boolean;
 };
 
 type Data = { items: ContextMenu[]; prevent: boolean };
@@ -42,10 +46,10 @@ contextMenuState.set(defaultKey, { items: defaultItems, prevent: false });
 
 export function useContextMenu(reference: HTMLElement | null) {
   const bubbleReference = (
-    ref: HTMLElement | null
+    reference: HTMLElement | null
   ): HTMLElement | {} | null => {
-    if (!ref) return defaultKey;
-    let current: HTMLElement | null = ref;
+    if (!reference) return defaultKey;
+    let current: HTMLElement | null = reference;
     while (
       (current && !contextMenuState.has(current)) ||
       current === document.body
@@ -58,8 +62,8 @@ export function useContextMenu(reference: HTMLElement | null) {
     return current || defaultKey;
   };
 
-  const getOrDefault = (ref: HTMLElement | null): Data => {
-    const bubbleRef = bubbleReference(ref);
+  const getOrDefault = (reference: HTMLElement | null): Data => {
+    const bubbleRef = bubbleReference(reference);
     if (bubbleRef === null) {
       return { items: [], prevent: true };
     } else {
@@ -73,7 +77,9 @@ export function useContextMenu(reference: HTMLElement | null) {
   const get = () => getOrDefault(reference);
 
   const set = (items: ContextMenu[]) => {
-    if (reference) contextMenuState.set(reference, { items, prevent: false });
+    // const reactiveItems = Array.isArray(items) ? ref(items) : items;
+    if (reference)
+      contextMenuState.set(reference, { items, prevent: false });
   };
 
   const setDefault = () => {

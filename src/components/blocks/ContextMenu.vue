@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   ContextMenu,
+  ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuLabel,
@@ -15,7 +16,7 @@ import {
   useContextMenu,
   type ContextMenu as ContextMenuType,
 } from "@/composables/useContextMenu";
-import { ref } from "vue";
+import { ref, unref } from "vue";
 
 function handleTrigger(e: MouseEvent) {
   const target =
@@ -57,31 +58,56 @@ let last = { x: 0, y: 0, time: 0 }; // last mouse position and time
           {{ item.label }}
         </ContextMenuLabel>
         <ContextMenuSeparator v-else-if="item.divider" />
-        <ContextMenuItem
-          v-else-if="item.title && !item.items"
-          :disabled="item.disabled"
-          @select="item.action?.()"
-        >
-          {{ item.title }}
-          <ContextMenuShortcut v-if="item.shortcut">
-            {{ item.shortcut }}
-          </ContextMenuShortcut>
-        </ContextMenuItem>
+
+        <template v-else-if="item.title && !item.items">
+          <ContextMenuCheckboxItem
+            v-if="item.checked !== undefined"
+            :disabled="item.disabled"
+            @select="item.action?.()"
+            :model-value="unref(item.checked)"
+          >
+            {{ item.title }}
+          </ContextMenuCheckboxItem>
+
+          <ContextMenuItem
+            v-else
+            :disabled="item.disabled"
+            @select="item.action?.()"
+          >
+            {{ item.title }}
+            <ContextMenuShortcut v-if="item.shortcut">
+              {{ item.shortcut }}
+            </ContextMenuShortcut>
+          </ContextMenuItem>
+        </template>
+
         <ContextMenuSub v-else-if="item.title && item.items">
           <ContextMenuSubTrigger> {{ item.title }}</ContextMenuSubTrigger>
           <ContextMenuSubContent class="w-48">
             <template v-for="(child, k) in item.items" :key="`child-${k}`">
               <ContextMenuSeparator v-if="child.divider" />
-              <ContextMenuItem
-                v-else
-                :disabled="child.disabled"
-                @select="item.action?.()"
-              >
-                {{ child.title }}
-                <ContextMenuShortcut v-if="child.shortcut">
-                  {{ child.shortcut }}
-                </ContextMenuShortcut>
-              </ContextMenuItem>
+
+              <template v-else>
+                <ContextMenuCheckboxItem
+                  v-if="child.checked !== undefined"
+                  :disabled="child.disabled"
+                  @select="child.action?.()"
+                  :model-value="unref(child.checked)"
+                >
+                  {{ child.title }}
+                </ContextMenuCheckboxItem>
+
+                <ContextMenuItem
+                  v-else
+                  :disabled="child.disabled"
+                  @select="item.action?.()"
+                >
+                  {{ child.title }}
+                  <ContextMenuShortcut v-if="child.shortcut">
+                    {{ child.shortcut }}
+                  </ContextMenuShortcut>
+                </ContextMenuItem>
+              </template>
             </template>
           </ContextMenuSubContent>
         </ContextMenuSub>
