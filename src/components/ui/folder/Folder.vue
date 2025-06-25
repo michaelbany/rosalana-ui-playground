@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import UiButton from "../button/UiButton.vue";
 import { motion } from "motion-v";
 import DocumentComponent from "./FolderDocument.vue";
@@ -77,6 +77,14 @@ const sizes = computed(() => {
 
 const isHovered = ref(false);
 const currentColor = ref<FinderColor>(props.color);
+
+watch(
+  () => props.color,
+  (newColor) => {
+    currentColor.value = newColor;
+  },
+  { immediate: true }
+);
 
 const folderColor = computed(() => {
   const color = getTheme(currentColor.value);
