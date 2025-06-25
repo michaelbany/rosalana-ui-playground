@@ -15,10 +15,7 @@ import {
   useContextMenu,
   type ContextMenu as ContextMenuType,
 } from "@/composables/useContextMenu";
-import { useMouse } from "@vueuse/core";
 import { ref } from "vue";
-
-const { x: currentMouseX, y: currentMouseY } = useMouse();
 
 function handleTrigger(e: MouseEvent) {
   const target =
@@ -28,25 +25,24 @@ function handleTrigger(e: MouseEvent) {
   const { items, prevent } = useContextMenu(target).get();
   menu.value = prevent ? [] : items;
 
-  const isNearLastPosition =
-    Math.abs(currentMouseX.value - lastMousePosition.x) < 10 &&
-    Math.abs(currentMouseY.value - lastMousePosition.y) < 10;
+  const dx = e.clientX - last.x;
+  const dy = e.clientY - last.y;
+  const dt = Date.now() - last.time;
+  const nearAndFast = dx * dx + dy * dy < 100 && dt < 1000; // 10 px & 1 s
 
-  if (!menu.value.length || (wasOpen.value && isNearLastPosition)) {
+  if (!menu.value.length || (wasOpen.value && nearAndFast)) {
     e.stopImmediatePropagation();
     wasOpen.value = false;
-    lastMousePosition.x = 0;
-    lastMousePosition.y = 0;
   } else {
     wasOpen.value = true;
-    lastMousePosition.x = currentMouseX.value;
-    lastMousePosition.y = currentMouseY.value;
   }
+
+  last = { x: e.clientX, y: e.clientY, time: Date.now() };
 }
 
 const menu = ref<ContextMenuType[]>([]);
 const wasOpen = ref(false);
-const lastMousePosition = { x: 0, y: 0 };
+let last = { x: 0, y: 0, time: 0 }; // last mouse position and time
 </script>
 
 <template>
