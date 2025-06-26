@@ -124,7 +124,7 @@ const unwrap = (r: any) =>
 onMounted(() => {
   const el = unwrap(documentRef.value);
   if (el) {
-    useContextMenu(el).set([
+    useContextMenu(el).set(() => ([
       { label: `${props.document.name} Document` },
       { divider: true },
       { title: "Open", icon: "ph:folder-open", shortcut: "Enter" },
@@ -132,7 +132,7 @@ onMounted(() => {
       { title: "Delete", icon: "ph:trash", shortcut: "Delete" },
       { divider: true },
       { title: "Properties", icon: "ph:file-text", shortcut: "Ctrl+I" },
-    ]);
+    ]));
   }
 });
 </script>
