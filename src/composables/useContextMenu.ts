@@ -19,27 +19,27 @@ const menuMap = new WeakMap<HTMLElement | {}, Data>();
 const defaultKey = {};
 
 const defaultItems = () => [
-  { label: "Main Menu" },
+  { label: "Menu" },
   { divider: true },
-  { title: "Open", icon: "ph:folder-open", shortcut: "⌘O" },
-  { title: "Save", icon: "ph:floppy-disk", shortcut: "⌘S" },
-  { title: "Export", icon: "ph:export", shortcut: "⇧⌘E" },
+  { title: "Open", icon: "lucide:folder", shortcut: "⌘O" },
+  { title: "Save", icon: "lucide:save", shortcut: "⌘S" },
+  { title: "Export", icon: "lucide:upload", shortcut: "⇧⌘E" },
   { divider: true },
   { title: "Edit", icon: "ph:pencil", shortcut: "⌘E" },
   {
     title: "Share",
-    icon: "ph:share-network",
+    icon: "lucide:share-2",
     items: [
-      { title: "Email", icon: "ph:envelope", shortcut: "⌘M" },
-      { title: "Slack", icon: "logos:slack", shortcut: "⌘L" },
-      { title: "Copy Link", icon: "ph:link", shortcut: "⌘C" },
+      { title: "Email", icon: "lucide:mail", shortcut: "⌘M" },
+      { title: "Slack", icon: "logos:slack-icon", shortcut: "⌘L" },
+      { title: "Copy Link", icon: "lucide:link-2", shortcut: "⌘C" },
     ],
   },
   { divider: true },
-  { title: "Preferences", icon: "ph:gear", shortcut: "⌘," },
-  { title: "Help", icon: "ph:question", shortcut: "F1" },
+  { title: "Preferences", icon: "lucide:settings", shortcut: "⌘," },
+  { title: "Help", icon: "lucide:circle-help", shortcut: "F1" },
   { divider: true },
-  { title: "Log out", icon: "ph:sign-out", shortcut: "⇧⌘Q" },
+  { title: "Log out", icon: "lucide:log-out", shortcut: "⇧⌘Q" },
 ];
 
 menuMap.set(defaultKey, { items: defaultItems, prevent: false });

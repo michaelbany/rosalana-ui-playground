@@ -10,11 +10,11 @@ onMounted(() => {
     useContextMenu(referenceItem.value).set(() => ([
       { label: "Component Menu" },
       { divider: true },
-      { title: "Refresh", icon: "ph:sync", shortcut: "⌘R" },
-      { title: "Edit", icon: "ph:gear", shortcut: "⌘E" },
-      { title: "Duplicate", icon: "ph:copy", shortcut: "⌘D" },
+      { title: "Refresh", icon: "lucide:refresh-cw", shortcut: "⌘R" },
+      { title: "Edit", icon: "lucide:pen-line", shortcut: "⌘E" },
+      { title: "Duplicate", icon: "lucide:copy", shortcut: "⌘D" },
       { divider: true },
-      { title: "Help", icon: "ph:question", shortcut: "F1" },
+      { title: "Help", icon: "lucide:circle-help", shortcut: "F1" },
     ]));
   }
 });

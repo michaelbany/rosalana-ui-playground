@@ -9,12 +9,12 @@ onMounted(() => {
     useContextMenu(referenceItem.value).set(() => ([
       { label: "Text Menu" },
       { divider: true },
-      { title: "Cut", icon: "ph:scissors", shortcut: "⌘X" },
-      { title: "Copy", icon: "ph:copy", shortcut: "⌘C" },
-      { title: "Paste", icon: "ph:paste", shortcut: "⌘V" },
+      { title: "Cut", icon: "lucide:scissors", shortcut: "⌘X" },
+      { title: "Copy", icon: "lucide:copy", shortcut: "⌘C" },
+      { title: "Paste", icon: "lucide:clipboard-paste", shortcut: "⌘V" },
       { divider: true },
-      { title: "Select All", icon: "ph:list-checks", shortcut: "⌘A" },
-      { title: "Find", icon: "ph:magnifying-glass", shortcut: "⌘F" },
+      { title: "Select All", icon: "lucide:text-select", shortcut: "⌘A" },
+      { title: "Find", icon: "lucide:scan-search", shortcut: "⌘F" },
     ]));
   }
 });

@@ -144,7 +144,7 @@ const items: FolderOrDocument[] = [
   {
     type: "document",
     item: { id: 23, name: "Prezentace.pptx", type: "presentation" },
-    tags: [{ name: "in progress", color: "green", icon: "lucide:check" }],
+    tags: [{ name: "done", color: "green", icon: "lucide:check" }],
   },
   {
     type: "document",

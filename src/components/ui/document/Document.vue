@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { motion } from "motion-v";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import UiButton from "../button/UiButton.vue";
 import UiIcon from "../UiIcon.vue";
 import type {
@@ -105,17 +105,26 @@ const iconSize = computed(() => {
 
 const colors = computed(() => {
   return {
-    icon: `text-${props.color}-300`,
-    grid: `stroke-${props.color}-50 fill-${props.color}-100`,
-    stroke: `stroke-${props.color}-200`,
+    icon: `text-${currentColor.value}-300`,
+    grid: `stroke-${currentColor.value}-50 fill-${currentColor.value}-100`,
+    stroke: `stroke-${currentColor.value}-200`,
   };
 });
 
 const selectColor = computed(() => {
-  return `bg-${props.color}-500 text-white`;
+  return `bg-${currentColor.value}-500 text-white`;
 });
 
 const isHovered = ref(false);
+const currentColor = ref<FinderColor>(props.color);
+
+watch(
+  () => props.color,
+  (newColor) => {
+    currentColor.value = newColor;
+  },
+  { immediate: true }
+);
 
 const documentRef = ref<HTMLElement | null>(null);
 const unwrap = (r: any) =>
@@ -124,15 +133,161 @@ const unwrap = (r: any) =>
 onMounted(() => {
   const el = unwrap(documentRef.value);
   if (el) {
-    useContextMenu(el).set(() => ([
+    useContextMenu(el).set(() => [
       { label: `${props.document.name} Document` },
       { divider: true },
       { title: "Open", icon: "ph:folder-open", shortcut: "Enter" },
       { title: "Rename", icon: "ph:pencil-simple", shortcut: "F2" },
       { title: "Delete", icon: "ph:trash", shortcut: "Delete" },
       { divider: true },
+      {
+        title: "Color",
+        items: [
+          {
+            title: "Blue",
+            icon: "lucide:circle-small.text-blue-500",
+            checked: currentColor.value === "blue",
+            action: () => (currentColor.value = "blue"),
+          },
+          {
+            title: "Red",
+            icon: "lucide:circle-small.text-red-500",
+            checked: currentColor.value === "red",
+            action: () => (currentColor.value = "red"),
+          },
+          {
+            title: "Green",
+            icon: "lucide:circle-small.text-green-500",
+            checked: currentColor.value === "green",
+            action: () => (currentColor.value = "green"),
+          },
+          {
+            title: "Orange",
+            icon: "lucide:circle-small.text-orange-500",
+            checked: currentColor.value === "orange",
+            action: () => (currentColor.value = "orange"),
+          },
+          {
+            title: "Gray",
+            icon: "lucide:circle-small.text-gray-500",
+            checked: currentColor.value === "gray",
+            action: () => (currentColor.value = "gray"),
+          },
+        ],
+      },
+      {
+        title: "Tags",
+        items: [
+          {
+            title: "Urgent",
+            icon: "lucide:alert-triangle",
+            checked: props.tags?.some((tag) => tag.name === "urgent"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "urgent"
+                );
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "urgent",
+                    color: "red",
+                    icon: "lucide:alert-triangle",
+                  });
+                }
+              }
+            },
+          },
+          {
+            title: "To Review",
+            icon: "lucide:eye",
+            checked: props.tags?.some((tag) => tag.name === "to review"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "to review"
+                );
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "to review",
+                    color: "blue",
+                    icon: "lucide:eye",
+                  });
+                }
+              }
+            },
+          },
+          {
+            title: "In Progress",
+            icon: "lucide:loader",
+            checked: props.tags?.some((tag) => tag.name === "in progress"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "in progress"
+                );
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "in progress",
+                    color: "gray",
+                    icon: "lucide:loader",
+                  });
+                }
+              }
+            },
+          },
+          {
+            title: "Favorite",
+            icon: "lucide:star",
+            checked: props.tags?.some((tag) => tag.name === "favorite"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "favorite"
+                );
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "favorite",
+                    color: "orange",
+                    icon: "lucide:star",
+                  });
+                }
+              }
+            },
+          },
+          {
+            title: "Done",
+            icon: "lucide:circle-check",
+            checked: props.tags?.some((tag) => tag.name === "done"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "done"
+                );
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "done",
+                    color: "green",
+                    icon: "lucide:check",
+                  });
+                }
+              }
+            },
+          },
+        ],
+      },
+      { divider: true },
       { title: "Properties", icon: "ph:file-text", shortcut: "Ctrl+I" },
-    ]));
+    ]);
   }
 });
 </script>

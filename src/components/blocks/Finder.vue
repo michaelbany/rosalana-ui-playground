@@ -146,12 +146,12 @@ const finderRef = ref<HTMLElement | null>(null);
 onMounted(() => {
   if (finderRef.value) {
     useContextMenu(finderRef.value).set(() => [
-      { label: "Finder Menu" },
+      { label: "Finder" },
       { divider: true },
       { title: "New Folder", icon: "lucide:folder-plus", shortcut: "⌘N" },
       { title: "New Document", icon: "lucide:file-plus", shortcut: "⌘D" },
       { divider: true },
-      { title: "Refresh", icon: "lucide:refresh", shortcut: "F5" },
+      { title: "Refresh", icon: "lucide:refresh-cw", shortcut: "F5" },
       { title: "Settings", icon: "lucide:settings", shortcut: "⌘," },
     ]);
   }

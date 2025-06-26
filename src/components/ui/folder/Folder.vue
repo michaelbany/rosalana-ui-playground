@@ -235,6 +235,27 @@ onMounted(() => {
               }
             },
           },
+          {
+            title: "Done",
+            icon: "lucide:circle-check",
+            checked: props.tags?.some((tag) => tag.name === "done"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "done"
+                );
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "done",
+                    color: "green",
+                    icon: "lucide:check",
+                  });
+                }
+              }
+            },
+          },
         ],
       },
     ]);
