@@ -107,8 +107,6 @@ onMounted(() => {
   const el = unwrap(folderRef.value);
   if (el) {
     useContextMenu(el).set(() => [
-      { label: `${props.folder.name} Folder` },
-      { divider: true },
       { title: "Open", icon: "lucide:folder-open", shortcut: "Enter" },
       { title: "Rename", icon: "lucide:folder-pen", shortcut: "F2" },
       { title: "Delete", icon: "lucide:trash", shortcut: "Delete" },
@@ -258,6 +256,8 @@ onMounted(() => {
           },
         ],
       },
+      { divider: true },
+      { title: "Properties", icon: "lucide:info", shortcut: "Ctrl+I" },
     ]);
   }
 });

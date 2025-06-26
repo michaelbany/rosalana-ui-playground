@@ -134,11 +134,9 @@ onMounted(() => {
   const el = unwrap(documentRef.value);
   if (el) {
     useContextMenu(el).set(() => [
-      { label: `${props.document.name} Document` },
-      { divider: true },
-      { title: "Open", icon: "ph:folder-open", shortcut: "Enter" },
-      { title: "Rename", icon: "ph:pencil-simple", shortcut: "F2" },
-      { title: "Delete", icon: "ph:trash", shortcut: "Delete" },
+      { title: "Open", icon: "lucide:file-input", shortcut: "Enter" },
+      { title: "Rename", icon: "lucide:file-pen", shortcut: "F2" },
+      { title: "Delete", icon: "lucide:trash", shortcut: "Delete" },
       { divider: true },
       {
         title: "Color",
@@ -286,7 +284,7 @@ onMounted(() => {
         ],
       },
       { divider: true },
-      { title: "Properties", icon: "ph:file-text", shortcut: "Ctrl+I" },
+      { title: "Properties", icon: "lucide:info", shortcut: "Ctrl+I" },
     ]);
   }
 });
