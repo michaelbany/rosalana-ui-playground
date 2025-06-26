@@ -292,7 +292,7 @@ onMounted(() => {
 <template>
   <UiButton
     ref="documentRef"
-    class="h-auto flex-col gap-0 cursor-pointer select-none"
+    class="h-auto flex-col gap-0 cursor-pointer select-none w-full"
     variant="ghost"
     :aria-label="`${props.document.name}, ${props.document.type}`"
     @click.stop="handleSelectOrClick"

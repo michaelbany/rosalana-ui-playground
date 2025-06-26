@@ -5,6 +5,8 @@ import FolderComponent from "../ui/folder/Folder.vue";
 import DocumentComponent, { type Document } from "../ui/document/Document.vue";
 import UiInput from "../ui/input/UiInput.vue";
 import { useContextMenu } from "@/composables/useContextMenu";
+import SelectionBox from "../ui/selection/selectionBox.vue";
+import SelectionBoxItem from "../ui/selection/SelectionBoxItem.vue";
 
 export type FinderColor = "blue" | "green" | "red" | "orange" | "gray";
 export type FinderSize = "sm" | "md" | "lg";
@@ -77,6 +79,21 @@ const selectedItems = ref<FolderOrDocument[]>([]);
 
 const lastClickedItem = ref<FolderOrDocument | null>(null);
 
+const handleCursorSelection = (selection: any) => {
+  if (props.preventSelect) return;
+
+  const { selectedKeys } = selection;
+
+  const items = props.items.filter((item) => 
+    selectedKeys.includes(`${item.type}-${item.item?.id}`)
+  );
+
+  selectedItems.value = items;
+  emit("select", selectedItems.value);
+}
+
+const isCursorSelecting = ref(false);
+
 const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
   if (item.type === "empty") return; // Ignorovat prázdné položky
   if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
@@ -123,6 +140,7 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
 };
 
 const handleDeselect = () => {
+  if (isCursorSelecting.value) return;
   selectedItems.value = [];
   lastClickedItem.value = null;
   emit("select", selectedItems);
@@ -186,47 +204,49 @@ onMounted(() => {
       autocomplete="off"
     />
 
-    <div
-      v-if="items.length > 0 && !items.every((item) => item.type === 'empty')"
-      class="grid gap-4 justify-between"
-      ref="finderRef"
-      :class="gridSize"
-      @click="handleDeselect"
-    >
-      <template v-for="(item, i) in items" :key="i">
-        <FolderComponent
-          v-if="item.type === 'folder'"
-          :key="item.item.id"
-          :folder="item.item"
-          :color="item.color || color"
-          :size="size"
-          :tags="item.tags || []"
-          :selected="selectedItems.includes(item)"
-          @select="(e) => handleSelectItem(item, e)"
-          @click="emit('click', item.item)"
-          :prevent-select="props.preventSelect"
-        />
-        <DocumentComponent
-          v-else-if="item.type === 'document'"
-          :document="item.item"
-          :size="size"
-          :color="item.color || color"
-          :tags="item.tags || []"
-          :selected="selectedItems.includes(item)"
-          @select="(e) => handleSelectItem(item, e)"
-          @click="emit('click', item.item)"
-          :prevent-select="props.preventSelect"
-        />
-        <div v-else class="pointer-events-none select-none" />
-      </template>
-    </div>
-
-    <div
-      v-else
-      class="text-center text-sm text-gray-400 my-8"
-      @click="handleDeselect"
-    >
-      No items found.
-    </div>
+    <SelectionBox @update:selection="handleCursorSelection" :disabled="props.preventSelect" @start:selection="isCursorSelecting = true" @end:selection="isCursorSelecting = false">
+      <div
+        v-if="items.length > 0 && !items.every((item) => item.type === 'empty')"
+        class="grid gap-4 justify-between w-full"
+        ref="finderRef"
+        :class="gridSize"
+        @click="handleDeselect"
+      >
+        <template v-for="item in items" :key="item?.item?.id">
+          <SelectionBoxItem :selection-key="`${item.type}-${item.item?.id}`">
+            <FolderComponent
+              v-if="item.type === 'folder'"
+              :folder="item.item"
+              :color="item.color || color"
+              :size="size"
+              :tags="item.tags || []"
+              :selected="selectedItems.includes(item)"
+              @select="(e) => handleSelectItem(item, e)"
+              @click="emit('click', item.item)"
+              :prevent-select="props.preventSelect"
+            />
+            <DocumentComponent
+              v-else-if="item.type === 'document'"
+              :document="item.item"
+              :size="size"
+              :color="item.color || color"
+              :tags="item.tags || []"
+              :selected="selectedItems.includes(item)"
+              @select="(e) => handleSelectItem(item, e)"
+              @click="emit('click', item.item)"
+              :prevent-select="props.preventSelect"
+            />
+            <div v-else class="pointer-events-none select-none w-full" />
+          </SelectionBoxItem>
+        </template>
+      </div>
+      <div
+        v-else
+        class="text-center text-sm text-gray-400 my-8 w-full"
+        @click="handleDeselect"
+      >
+        No items found.
+      </div>
+    </SelectionBox>
   </div>
 </template>
