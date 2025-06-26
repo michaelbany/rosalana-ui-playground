@@ -148,6 +148,89 @@ onMounted(() => {
           },
         ],
       },
+      {
+        title: "Tags",
+        items: [
+          {
+            title: "Urgent",
+            icon: "lucide:alert-triangle",
+            checked: props.tags?.some((tag) => tag.name === "urgent"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "urgent"
+                );
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "urgent",
+                    color: "red",
+                    icon: "lucide:alert-triangle",
+                  });
+                }
+              }
+            },
+          },
+          {
+            title: "To Review",
+            icon: "lucide:eye",
+            checked: props.tags?.some((tag) => tag.name === "to review"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex((tag) => tag.name === "to review");
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "to review",
+                    color: "blue",
+                    icon: "lucide:eye",
+                  });
+                }
+              }
+            },
+          },
+          {
+            title: "In Progress",
+            icon: "lucide:loader",
+            checked: props.tags?.some((tag) => tag.name === "in progress"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex((tag) => tag.name === "in progress");
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "in progress",
+                    color: "gray",
+                    icon: "lucide:loader",
+                  });
+                }
+              }
+            },
+          },
+          {
+            title: "Favorite",
+            icon: "lucide:star",
+            checked: props.tags?.some((tag) => tag.name === "favorite"),
+            action: () => {
+              if (props.tags) {
+                const tagIndex = props.tags.findIndex((tag) => tag.name === "favorite");
+                if (tagIndex !== -1) {
+                  props.tags.splice(tagIndex, 1);
+                } else {
+                  props.tags.push({
+                    name: "favorite",
+                    color: "orange",
+                    icon: "lucide:star",
+                  });
+                }
+              }
+            },
+          },
+        ],
+      },
     ]);
   }
 });

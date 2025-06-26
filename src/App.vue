@@ -67,7 +67,7 @@ const items: FolderOrDocument[] = [
       name: "Smlouvy",
       documents: [],
     },
-    tags: [{ name: "important", color: "orange", icon: "lucide:star" }],
+    tags: [{ name: "favorite", color: "orange", icon: "lucide:star" }],
   },
   {
     type: "folder",
@@ -83,7 +83,7 @@ const items: FolderOrDocument[] = [
     },
     tags: [
       { name: "to review", color: "blue", icon: "lucide:eye" },
-      { name: "important", color: "orange", icon: "lucide:star" },
+      { name: "favorite", color: "orange", icon: "lucide:star" },
     ],
   },
   {

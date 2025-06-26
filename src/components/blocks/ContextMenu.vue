@@ -24,13 +24,8 @@ function handleTrigger(e: MouseEvent) {
     null;
 
   const { menu: targetMenu } = useContextMenu(target);
-  console.log(
-    targetMenu
-      ? { items: targetMenu.items?.(), prevent: targetMenu.prevent }
-      : "No context menu set"
-  );
 
-  menu.value = targetMenu?.prevent ? [] : targetMenu?.items?.() ?? [];
+  menu.value = targetMenu?.prevent ? [] : targetMenu?.items?.();
 
   const dx = e.clientX - last.x;
   const dy = e.clientY - last.y;
