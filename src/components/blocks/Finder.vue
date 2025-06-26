@@ -145,7 +145,7 @@ const finderRef = ref<HTMLElement | null>(null);
 
 onMounted(() => {
   if (finderRef.value) {
-    useContextMenu(finderRef.value).set([
+    useContextMenu(finderRef.value).set(() => [
       { label: "Finder Menu" },
       { divider: true },
       { title: "New Folder", icon: "lucide:folder-plus", shortcut: "⌘N" },

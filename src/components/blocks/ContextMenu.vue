@@ -23,8 +23,14 @@ function handleTrigger(e: MouseEvent) {
     e.composedPath().find((n): n is HTMLElement => n instanceof HTMLElement) ??
     null;
 
-  const { items, prevent } = useContextMenu(target).get();
-  menu.value = prevent ? [] : items;
+  const { menu: targetMenu } = useContextMenu(target);
+  console.log(
+    targetMenu
+      ? { items: targetMenu.items?.(), prevent: targetMenu.prevent }
+      : "No context menu set"
+  );
+
+  menu.value = targetMenu?.prevent ? [] : targetMenu?.items?.() ?? [];
 
   const dx = e.clientX - last.x;
   const dy = e.clientY - last.y;

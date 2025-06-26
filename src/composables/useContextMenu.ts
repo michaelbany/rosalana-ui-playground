@@ -1,17 +1,3 @@
-import { type Ref } from "vue";
-
-/**
- * Upravit context menu na ref wrapper
- * 
- * API:
- * const { menu } = useContextMenu(el);
- * menu.value = [...];
- * 
- * Ref se vytvoří automaticky v useContextMenu.
- * 
- * Celé menu by mělo být Reactive<ContextMenu[]> aby bylo kompletně reaktivni i uvnitř hodnot.
- */
-
 export type ContextMenu = {
   title?: string;
   icon?: string;
@@ -22,15 +8,16 @@ export type ContextMenu = {
   label?: string;
   items?: ContextMenu[];
   selected?: boolean;
-  checked?: Ref<boolean> | boolean;
+  checked?: boolean;
 };
 
-type Data = { items: ContextMenu[]; prevent: boolean };
-const contextMenuState = new WeakMap<HTMLElement | {}, Data>();
+type Data = { items: () => ContextMenu[]; prevent: boolean };
+
+const menuMap = new WeakMap<HTMLElement | {}, Data>();
 
 const defaultKey = {};
 
-const defaultItems: ContextMenu[] = [
+const defaultItems = () => [
   { label: "Main Menu" },
   { divider: true },
   { title: "Open", icon: "ph:folder-open", shortcut: "⌘O" },
@@ -54,66 +41,66 @@ const defaultItems: ContextMenu[] = [
   { title: "Log out", icon: "ph:sign-out", shortcut: "⇧⌘Q" },
 ];
 
-contextMenuState.set(defaultKey, { items: defaultItems, prevent: false });
+menuMap.set(defaultKey, { items: defaultItems, prevent: false });
 
 export function useContextMenu(reference: HTMLElement | null) {
-  const bubbleReference = (
-    reference: HTMLElement | null
-  ): HTMLElement | {} | null => {
-    if (!reference) return defaultKey;
-    let current: HTMLElement | null = reference;
-    while (
-      (current && !contextMenuState.has(current)) ||
-      current === document.body
-    ) {
-      if (current.dataset?.preventContextMenu !== undefined) {
-        return null;
-      }
-      current = current.parentElement;
-    }
-    return current || defaultKey;
-  };
-
-  const getOrDefault = (reference: HTMLElement | null): Data => {
-    const bubbleRef = bubbleReference(reference);
-    if (bubbleRef === null) {
-      return { items: [], prevent: true };
-    } else {
-      return (
-        (bubbleRef && contextMenuState.get(bubbleRef)) ||
-        contextMenuState.get(defaultKey)!
-      );
-    }
-  };
-
-  const get = () => getOrDefault(reference);
-
-  const set = (items: ContextMenu[]) => {
-    // const reactiveItems = Array.isArray(items) ? ref(items) : items;
-    if (reference)
-      contextMenuState.set(reference, { items, prevent: false });
-  };
-
-  const setDefault = () => {
-    if (reference)
-      contextMenuState.set(reference, { items: defaultItems, prevent: false });
-  };
-
-  const prevent = (value = true) => {
-    if (!reference) return;
-    const { items } = getOrDefault(reference);
-    contextMenuState.set(reference, { items, prevent: value });
-  };
-
-  const unsubscribe = () => {
-    if (reference) contextMenuState.delete(reference);
-  };
+  const bubbled = bubble(reference);
+  const menu = getMenu(bubbled);
 
   return {
-    get,
-    set,
-    setDefault,
-    prevent,
-    unsubscribe,
+    menu,
+    restore: () => {
+      if (reference) {
+        menuMap.set(reference, { items: defaultItems, prevent: false });
+      }
+      return useContextMenu(reference);
+    },
+    set: (items: () => ContextMenu[]) => {
+      if (reference) {
+        menuMap.set(reference, { items, prevent: false });
+      }
+      return useContextMenu(reference);
+    },
+    update: (fn: (items: ContextMenu[]) => ContextMenu[]) => {
+      if (!reference) return;
+
+      menuMap.set(reference, {
+        items: () => fn(menu.items()),
+        prevent: false,
+      });
+
+      return useContextMenu(reference);
+    },
+    prevent: (value = true) => {
+      if (reference) {
+        menuMap.set(reference, { items: menu.items, prevent: value });
+      }
+
+      return useContextMenu(reference);
+    },
   };
+}
+
+/** Helpers */
+function bubble(reference: HTMLElement | null): HTMLElement | {} | null {
+  if (!reference) return defaultKey;
+
+  let current: HTMLElement | null = reference;
+
+  while ((current && !menuMap.has(current)) || current === document.body) {
+    if (current.dataset?.preventContextMenu !== undefined) {
+      return null;
+    }
+    current = current.parentElement;
+  }
+
+  return current || defaultKey;
+}
+
+function getMenu(reference: HTMLElement | null | {}): Data {
+  if (reference === null) {
+    return { items: () => [], prevent: true };
+  } else {
+    return (reference && menuMap.get(reference)) || menuMap.get(defaultKey)!;
+  }
 }

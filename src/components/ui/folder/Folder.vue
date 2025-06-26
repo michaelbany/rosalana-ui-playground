@@ -106,7 +106,7 @@ const unwrap = (r: any) =>
 onMounted(() => {
   const el = unwrap(folderRef.value);
   if (el) {
-    useContextMenu(el).set([
+    useContextMenu(el).set(() => [
       { label: `${props.folder.name} Folder` },
       { divider: true },
       { title: "Open", icon: "ph:folder-open", shortcut: "Enter" },
@@ -119,31 +119,31 @@ onMounted(() => {
           {
             title: "Blue",
             icon: "ph:palette",
-            checked: computed(() => currentColor.value === "blue"),
+            checked: currentColor.value === "blue",
             action: () => (currentColor.value = "blue"),
           },
           {
             title: "Red",
             icon: "ph:palette",
-            checked: computed(() => currentColor.value === "red"),
+            checked: currentColor.value === "red",
             action: () => (currentColor.value = "red"),
           },
           {
             title: "Green",
             icon: "ph:palette",
-            checked: computed(() => currentColor.value === "green"),
+            checked: currentColor.value === "green",
             action: () => (currentColor.value = "green"),
           },
           {
             title: "Orange",
             icon: "ph:palette",
-            checked: computed(() => currentColor.value === "orange"),
+            checked: currentColor.value === "orange",
             action: () => (currentColor.value = "orange"),
           },
           {
             title: "Gray",
             icon: "ph:palette",
-            checked: computed(() => currentColor.value === "gray"),
+            checked: currentColor.value === "gray",
             action: () => (currentColor.value = "gray"),
           },
         ],

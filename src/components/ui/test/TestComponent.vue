@@ -7,7 +7,7 @@ const referenceItem = ref<HTMLElement | null>(null);
 onMounted(() => {
   if (referenceItem.value) {
     // Testovací menu specifické pro tento komponent, přepisuje defaultní menu
-    useContextMenu(referenceItem.value).set([
+    useContextMenu(referenceItem.value).set(() => ([
       { label: "Component Menu" },
       { divider: true },
       { title: "Refresh", icon: "ph:sync", shortcut: "⌘R" },
@@ -15,7 +15,7 @@ onMounted(() => {
       { title: "Duplicate", icon: "ph:copy", shortcut: "⌘D" },
       { divider: true },
       { title: "Help", icon: "ph:question", shortcut: "F1" },
-    ]);
+    ]));
   }
 });
 </script>

@@ -6,7 +6,7 @@ const referenceItem = ref<HTMLElement | null>(null);
 
 onMounted(() => {
   if (referenceItem.value) {
-    useContextMenu(referenceItem.value).set([
+    useContextMenu(referenceItem.value).set(() => ([
       { label: "Text Menu" },
       { divider: true },
       { title: "Cut", icon: "ph:scissors", shortcut: "⌘X" },
@@ -15,7 +15,7 @@ onMounted(() => {
       { divider: true },
       { title: "Select All", icon: "ph:list-checks", shortcut: "⌘A" },
       { title: "Find", icon: "ph:magnifying-glass", shortcut: "⌘F" },
-    ]);
+    ]));
   }
 });
 </script>
