@@ -9,6 +9,7 @@ export type ContextMenu = {
   items?: ContextMenu[];
   selected?: boolean;
   checked?: boolean;
+  class?: string;
 };
 
 type Data = { items: () => ContextMenu[]; prevent: boolean };

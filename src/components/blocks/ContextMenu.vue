@@ -17,6 +17,7 @@ import {
   type ContextMenu as ContextMenuType,
 } from "@/composables/useContextMenu";
 import { ref, unref } from "vue";
+import UiIcon from "../ui/UiIcon.vue";
 
 function handleTrigger(e: MouseEvent) {
   const target =
@@ -66,7 +67,9 @@ let last = { x: 0, y: 0, time: 0 }; // last mouse position and time
             :disabled="item.disabled"
             @select="item.action?.()"
             :model-value="unref(item.checked)"
+            :class="item.class || ''"
           >
+            <UiIcon v-if="item.icon" :name="item.icon" />
             {{ item.title }}
           </ContextMenuCheckboxItem>
 
@@ -74,7 +77,9 @@ let last = { x: 0, y: 0, time: 0 }; // last mouse position and time
             v-else
             :disabled="item.disabled"
             @select="item.action?.()"
+            :class="item.class || ''"
           >
+            <UiIcon v-if="item.icon" :name="item.icon" />
             {{ item.title }}
             <ContextMenuShortcut v-if="item.shortcut">
               {{ item.shortcut }}
@@ -83,7 +88,10 @@ let last = { x: 0, y: 0, time: 0 }; // last mouse position and time
         </template>
 
         <ContextMenuSub v-else-if="item.title && item.items">
-          <ContextMenuSubTrigger> {{ item.title }}</ContextMenuSubTrigger>
+          <ContextMenuSubTrigger :class="item.class || ''">
+            <UiIcon v-if="item.icon" :name="item.icon" class="mr-2" />
+            {{ item.title }}
+          </ContextMenuSubTrigger>
           <ContextMenuSubContent class="w-48">
             <template v-for="(child, k) in item.items" :key="`child-${k}`">
               <ContextMenuSeparator v-if="child.divider" />
@@ -94,7 +102,9 @@ let last = { x: 0, y: 0, time: 0 }; // last mouse position and time
                   :disabled="child.disabled"
                   @select="child.action?.()"
                   :model-value="unref(child.checked)"
+                  :class="child.class || ''"
                 >
+                  <UiIcon v-if="child.icon" :name="child.icon" />
                   {{ child.title }}
                 </ContextMenuCheckboxItem>
 
@@ -102,7 +112,9 @@ let last = { x: 0, y: 0, time: 0 }; // last mouse position and time
                   v-else
                   :disabled="child.disabled"
                   @select="item.action?.()"
+                  :class="child.class || ''"
                 >
+                  <UiIcon v-if="child.icon" :name="child.icon" />
                   {{ child.title }}
                   <ContextMenuShortcut v-if="child.shortcut">
                     {{ child.shortcut }}

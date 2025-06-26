@@ -18,19 +18,21 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * Iconify používá „set:icon“. Pokud uživatel napíše „mdi-home“, převedeme na „mdi:home“.
  */
-const iconKey = computed(() =>
-  props.name.includes(":") ? props.name : props.name.replace("-", ":"),
-)
+const iconKeyAndClass = computed(() => {
+
+  const key = props.name.includes(":") ? props.name : props.name.replace("-", ":");
+  return key.split(".");
+})
 </script>
 
 <template>
   <Icon
-    :icon="iconKey"
+    :icon="iconKeyAndClass[0]"
     v-bind="
       props.size
         ? { width: props.size, height: props.size }
         : {}
     "
-    :class="['inline-block', props.class]"
+    :class="['inline-block', props.class, iconKeyAndClass[1] ? iconKeyAndClass[1] : '',]"
   />
 </template>

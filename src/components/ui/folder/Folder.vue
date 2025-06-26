@@ -109,40 +109,40 @@ onMounted(() => {
     useContextMenu(el).set(() => [
       { label: `${props.folder.name} Folder` },
       { divider: true },
-      { title: "Open", icon: "ph:folder-open", shortcut: "Enter" },
-      { title: "Rename", icon: "ph:pencil-simple", shortcut: "F2" },
-      { title: "Delete", icon: "ph:trash", shortcut: "Delete" },
+      { title: "Open", icon: "lucide:folder-open", shortcut: "Enter" },
+      { title: "Rename", icon: "lucide:folder-pen", shortcut: "F2" },
+      { title: "Delete", icon: "lucide:trash", shortcut: "Delete" },
       { divider: true },
       {
-        title: "Colors",
+        title: "Color",
         items: [
           {
             title: "Blue",
-            icon: "ph:palette",
+            icon: "lucide:circle-small.text-blue-500",
             checked: currentColor.value === "blue",
             action: () => (currentColor.value = "blue"),
           },
           {
             title: "Red",
-            icon: "ph:palette",
+            icon: "lucide:circle-small.text-red-500",
             checked: currentColor.value === "red",
             action: () => (currentColor.value = "red"),
           },
           {
             title: "Green",
-            icon: "ph:palette",
+            icon: "lucide:circle-small.text-green-500",
             checked: currentColor.value === "green",
             action: () => (currentColor.value = "green"),
           },
           {
             title: "Orange",
-            icon: "ph:palette",
+            icon: "lucide:circle-small.text-orange-500",
             checked: currentColor.value === "orange",
             action: () => (currentColor.value = "orange"),
           },
           {
             title: "Gray",
-            icon: "ph:palette",
+            icon: "lucide:circle-small.text-gray-500",
             checked: currentColor.value === "gray",
             action: () => (currentColor.value = "gray"),
           },
@@ -178,7 +178,9 @@ onMounted(() => {
             checked: props.tags?.some((tag) => tag.name === "to review"),
             action: () => {
               if (props.tags) {
-                const tagIndex = props.tags.findIndex((tag) => tag.name === "to review");
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "to review"
+                );
                 if (tagIndex !== -1) {
                   props.tags.splice(tagIndex, 1);
                 } else {
@@ -197,7 +199,9 @@ onMounted(() => {
             checked: props.tags?.some((tag) => tag.name === "in progress"),
             action: () => {
               if (props.tags) {
-                const tagIndex = props.tags.findIndex((tag) => tag.name === "in progress");
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "in progress"
+                );
                 if (tagIndex !== -1) {
                   props.tags.splice(tagIndex, 1);
                 } else {
@@ -216,7 +220,9 @@ onMounted(() => {
             checked: props.tags?.some((tag) => tag.name === "favorite"),
             action: () => {
               if (props.tags) {
-                const tagIndex = props.tags.findIndex((tag) => tag.name === "favorite");
+                const tagIndex = props.tags.findIndex(
+                  (tag) => tag.name === "favorite"
+                );
                 if (tagIndex !== -1) {
                   props.tags.splice(tagIndex, 1);
                 } else {
