@@ -96,17 +96,15 @@ const isFrameSelecting = ref(false);
 
 const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
   if (item.type === "empty") return; // Ignorovat prázdné položky
-  if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
-    select(item);
+
+  if (e.shiftKey) {
+    select(item, 'shift');
+  } else if (e.ctrlKey || e.metaKey) {
+    select(item, 'ctrl');
   } else {
-    if (e.shiftKey) {
-      // Shift+click - select range
-      select(item, 'shift');
-    } else {
-      // Ctrl/Cmd+click - toggle selection
-      select(item, 'ctrl');
-    }
+    select(item);
   }
+  
   emit("select", selected.value);
 };
 
