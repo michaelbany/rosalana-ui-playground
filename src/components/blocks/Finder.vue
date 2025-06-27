@@ -96,7 +96,7 @@ const handleCursorSelection = (selection: any) => {
   emit("select", selected.value);
 };
 
-const isCursorSelecting = ref(false);
+const isFrameSelecting = ref(false);
 
 const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
   if (item.type === "empty") return; // Ignorovat prázdné položky
@@ -160,7 +160,8 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
 // };
 
 const handleDeselect = () => {
-  if (isCursorSelecting.value) return;
+  console.log("Deselecting items", isFrameSelecting.value);
+  if (isFrameSelecting.value) return;
   clear();
   emit("select", selected.value);
 };
@@ -223,11 +224,12 @@ onMounted(() => {
       autocomplete="off"
     />
 
+    {{ isFrameSelecting }}
+
     <FrameSelection
+      @selecting="(ref) => isFrameSelecting = ref"
       @update:selection="handleCursorSelection"
       :disabled="props.preventSelect"
-      @start:selection="isCursorSelecting = true"
-      @end:selection="isCursorSelecting = false"
     >
       <div
         v-if="items.length > 0 && !items.every((item) => item.type === 'empty')"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, ref } from "vue";
+import { provide, ref, watch } from "vue";
 const props = defineProps<{
   disabled?: boolean;
 }>();
@@ -7,6 +7,7 @@ const emit = defineEmits([
   "start:selection",
   "update:selection",
   "end:selection",
+  "selecting",
 ]);
 
 const startX = ref(0);
@@ -14,6 +15,11 @@ const startY = ref(0);
 const endX = ref(0);
 const endY = ref(0);
 const isSelecting = ref(false);
+const maybeSelecting = ref(false);
+
+watch(isSelecting, (isSelecting) => {
+  emit("selecting", isSelecting);
+});
 
 const registeredItems = ref<HTMLElement[]>([]);
 
@@ -26,18 +32,21 @@ provide("unregisterSelectionBoxItem", (el: HTMLElement) => {
 
 const handleStart = (event: MouseEvent) => {
   if (props.disabled) return;
-  emit("start:selection", event);
   startX.value = event.clientX;
   startY.value = event.clientY;
   endX.value = event.clientX;
   endY.value = event.clientY;
-  isSelecting.value = true;
+  maybeSelecting.value = true;
 };
 
 const handleMove = (event: MouseEvent) => {
-  if (!isSelecting.value) return;
+  if (!maybeSelecting.value) return;
   endX.value = event.clientX;
   endY.value = event.clientY;
+  if (!isSelecting.value && (Math.abs(endX.value - startX.value) > 10 || Math.abs(endY.value - startY.value) > 10)) {
+    isSelecting.value = true;
+    emit("start:selection", event);
+  }
 
   const box = getSelectionBox();
   const selected = registeredItems.value.filter((el) =>
@@ -60,7 +69,6 @@ const handleMove = (event: MouseEvent) => {
 };
 
 const handleEnd = () => {
-  if (!isSelecting.value) return;
   const box = getSelectionBox();
   const selected = registeredItems.value.filter((el) =>
     isElementInBox(el, box)
@@ -75,9 +83,10 @@ const handleEnd = () => {
       selected,
       selectedKeys,
     });
-  }, 0); 
+    isSelecting.value = false;
+    maybeSelecting.value = false;
+  }, 0);
 
-  isSelecting.value = false;
 };
 
 const getSelectionBox = () => {

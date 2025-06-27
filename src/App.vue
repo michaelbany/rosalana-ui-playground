@@ -163,7 +163,6 @@ const items: FolderOrDocument[] = [
         </Container>
 
         <Container name="Context Menu">
-          
           <TestComponent />
           <TestComponent2 />
           <TestWithText />
@@ -173,8 +172,8 @@ const items: FolderOrDocument[] = [
         <Container name="Folder">
           <Finder
             :items="items"
-            @click="(i) => console.log('clicked', i)"
-            @select="(i) => console.log('Selected:', i)"
+            @click="(i) => null /*console.log('clicked', i)*/"
+            @select="(i) => null /*console.log('Selected:', i)*/"
           />
         </Container>
       </div>

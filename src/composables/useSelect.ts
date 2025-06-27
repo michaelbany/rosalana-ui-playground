@@ -11,12 +11,15 @@ export function useSelect<T>(items: Ref<T[]>) {
     if (options.shiftKey) {
       try {
         range(item);
+        console.log("[useSelect]: Shift key pressed");
       } catch (error) {
         toggle(item);
       }
     } else if (options.ctrlKey) {
+      console.log("[useSelect]: Ctrl key pressed");
       toggle(item, true);
     } else {
+      console.log("[useSelect]: No key pressed");
       toggle(item);
     }
 
@@ -68,6 +71,7 @@ export function useSelect<T>(items: Ref<T[]>) {
   }
 
   function clear() {
+    console.log("[useSelect]: Clearing selection");
     selected.value = [];
     lastSelectedIndex = -1;
   }
