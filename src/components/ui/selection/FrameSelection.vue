@@ -43,29 +43,35 @@ const handleMove = (event: MouseEvent) => {
   if (!maybeSelecting.value) return;
   endX.value = event.clientX;
   endY.value = event.clientY;
-  if (!isSelecting.value && (Math.abs(endX.value - startX.value) > 10 || Math.abs(endY.value - startY.value) > 10)) {
+  if (
+    !isSelecting.value &&
+    (Math.abs(endX.value - startX.value) > 10 ||
+      Math.abs(endY.value - startY.value) > 10)
+  ) {
     isSelecting.value = true;
     emit("start:selection", event);
   }
 
-  const box = getSelectionBox();
-  const selected = registeredItems.value.filter((el) =>
-    isElementInBox(el, box)
-  );
-  const selectedKeys = selected.map((el) => el.dataset.selectionBoxKey);
+  if (isSelecting.value) {
+    const box = getSelectionBox();
+    const selected = registeredItems.value.filter((el) =>
+      isElementInBox(el, box)
+    );
+    const selectedKeys = selected.map((el) => el.dataset.selectionBoxKey);
 
-  emit(
-    "update:selection",
-    {
-      startX: startX.value,
-      startY: startY.value,
-      endX: endX.value,
-      endY: endY.value,
-      selected,
-      selectedKeys,
-    },
-    event
-  );
+    emit(
+      "update:selection",
+      {
+        startX: startX.value,
+        startY: startY.value,
+        endX: endX.value,
+        endY: endY.value,
+        selected,
+        selectedKeys,
+      },
+      event
+    );
+  }
 };
 
 const handleEnd = () => {
@@ -86,7 +92,6 @@ const handleEnd = () => {
     isSelecting.value = false;
     maybeSelecting.value = false;
   }, 0);
-
 };
 
 const getSelectionBox = () => {
