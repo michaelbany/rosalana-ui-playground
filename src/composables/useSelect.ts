@@ -1,38 +1,39 @@
 import { ref, type Ref } from "vue";
 
-export function useSelect<T>(items: Ref<T[]>) {
+type Key = string | number;
+
+export function useSelect<T>(
+  items: Ref<T[]>,
+  options?: {
+    getKey?: (item: T) => Key;
+  }
+) {
   const selected: Ref<T[]> = ref([]);
   let lastSelectedIndex: number = -1;
 
   function select(
     item: T,
-    options: { shiftKey?: boolean; ctrlKey?: boolean } = {}
+    mode: { shiftKey?: boolean; ctrlKey?: boolean } = {}
   ) {
-    if (options.shiftKey) {
+
+    if (mode.shiftKey) {
       try {
         range(item);
-        console.log("[useSelect]: Shift key pressed");
       } catch (error) {
         toggle(item);
       }
-    } else if (options.ctrlKey) {
-      console.log("[useSelect]: Ctrl key pressed");
+    } else if (mode.ctrlKey) {
       toggle(item, true);
     } else {
-      console.log("[useSelect]: No key pressed");
       toggle(item);
     }
-
-    lastSelectedIndex = items.value.indexOf(item);
-    if (lastSelectedIndex === -1) {
-      console.warn("[useSelection]: Item not found in the list");
-    }
+    lastSelectedIndex = getIndex(items.value, item);
   }
 
   function toggle(item: T, multiselect: boolean = false) {
     if (multiselect) {
-      const index = selected.value.indexOf(item);
-      if (index > -1) {
+      const index = getIndex(selected.value, item);
+      if (index !== -1) {
         selected.value.splice(index, 1);
       } else {
         selected.value.push(item);
@@ -43,9 +44,9 @@ export function useSelect<T>(items: Ref<T[]>) {
   }
 
   function range(item: T) {
-    const currentIndex = getIndex(item);
+    const currentIndex = getIndex(items.value, item);
     const referenceIndex = lastSelectedIndex !== -1 ? lastSelectedIndex : 0;
-    if (currentIndex === -1) return;
+    if (currentIndex === -1) throw new Error("no index found");
     if (referenceIndex === -1) throw new Error("no reference index found");
 
     const start = Math.min(referenceIndex, currentIndex);
@@ -57,10 +58,14 @@ export function useSelect<T>(items: Ref<T[]>) {
     selected.value = items;
   }
 
-  function getIndex(item: T): number {
-    const index = items.value.indexOf(item);
-    if (index === -1) {
-      console.warn("[useSelect]: Item not found in the list");
+  function getIndex(arr: T[], item: T): number {
+    let index = -1;
+    const findKeyFn = options?.getKey;
+    if (!findKeyFn) {
+        index = arr.indexOf(item);
+    } else {
+        const key = findKeyFn(item);
+        index = arr.findIndex((i) => findKeyFn(i) === key);
     }
     return index;
   }
@@ -71,13 +76,12 @@ export function useSelect<T>(items: Ref<T[]>) {
   }
 
   function clear() {
-    console.log("[useSelect]: Clearing selection");
     selected.value = [];
     lastSelectedIndex = -1;
   }
 
   function isSelected(item: T): boolean {
-    return selected.value.includes(item);
+    return getIndex(selected.value, item) !== -1;
   }
 
   return {

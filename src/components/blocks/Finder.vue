@@ -79,10 +79,6 @@ const color = ref<"blue" | "green" | "red" | "orange" | "gray">("blue");
 const { selected, select, setSelected, clear, isSelected } =
   useSelect<FolderOrDocument>(items);
 
-// const selectedItems = ref<FolderOrDocument[]>([]);
-
-// const lastClickedItem = ref<FolderOrDocument | null>(null);
-
 const handleCursorSelection = (selection: any) => {
   if (props.preventSelect) return;
 
@@ -110,57 +106,10 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
       select(item, { ctrlKey: true });
     }
   }
-
   emit("select", selected.value);
 };
 
-// const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
-//   if (item.type === "empty") return; // Ignorovat prázdné položky
-//   if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
-//     selectedItems.value = [item];
-//     lastClickedItem.value = item; // Zapamatování referenčního bodu
-//   } else {
-//     if (e.shiftKey) {
-//       // Shift+click - od reference k aktuálnímu
-//       const referenceItem = lastClickedItem.value || selectedItems.value[0];
-
-//       if (referenceItem && referenceItem.type !== "empty") {
-//         const referenceIndex = items.value.findIndex(
-//           (i) => i.item?.id === referenceItem.item.id
-//         );
-//         const currentIndex = items.value.findIndex(
-//           (i) => i.item?.id === item.item.id
-//         );
-
-//         if (referenceIndex !== -1 && currentIndex !== -1) {
-//           const start = Math.min(referenceIndex, currentIndex);
-//           const end = Math.max(referenceIndex, currentIndex);
-//           selectedItems.value = items.value.slice(start, end + 1);
-//         }
-//       } else {
-//         // Fallback pokud není reference
-//         selectedItems.value = [item];
-//         lastClickedItem.value = item;
-//       }
-//     } else {
-//       // Ctrl/Cmd+click - toggle selection
-//       const index = selectedItems.value.findIndex(
-//         (selected) => selected.item?.id === item.item.id
-//       );
-
-//       if (index !== -1) {
-//         selectedItems.value.splice(index, 1);
-//       } else {
-//         selectedItems.value.push(item);
-//       }
-//     }
-//   }
-
-//   emit("select", selectedItems.value);
-// };
-
 const handleDeselect = () => {
-  console.log("Deselecting items", isFrameSelecting.value);
   if (isFrameSelecting.value) return;
   clear();
   emit("select", selected.value);
@@ -224,10 +173,8 @@ onMounted(() => {
       autocomplete="off"
     />
 
-    {{ isFrameSelecting }}
-
     <FrameSelection
-      @selecting="(ref) => isFrameSelecting = ref"
+      @selecting="(ref) => (isFrameSelecting = ref)"
       @update:selection="handleCursorSelection"
       :disabled="props.preventSelect"
     >

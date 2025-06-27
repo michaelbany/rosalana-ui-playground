@@ -172,8 +172,8 @@ const items: FolderOrDocument[] = [
         <Container name="Folder">
           <Finder
             :items="items"
-            @click="(i) => null /*console.log('clicked', i)*/"
-            @select="(i) => null /*console.log('Selected:', i)*/"
+            @click="(i) => console.log('clicked', i)"
+            @select="(i) => console.log('Selected:', i)"
           />
         </Container>
       </div>
