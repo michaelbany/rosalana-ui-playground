@@ -5,8 +5,9 @@ import FolderComponent from "../ui/folder/Folder.vue";
 import DocumentComponent, { type Document } from "../ui/document/Document.vue";
 import UiInput from "../ui/input/UiInput.vue";
 import { useContextMenu } from "@/composables/useContextMenu";
-import SelectionBox from "../ui/selection/selectionBox.vue";
-import SelectionBoxItem from "../ui/selection/SelectionBoxItem.vue";
+import FrameSelection from "../ui/selection/FrameSelection.vue";
+import FrameSelectionItem from "../ui/selection/FrameSelectionItem.vue";
+import { useSelect } from "@/composables/useSelect";
 
 export type FinderColor = "blue" | "green" | "red" | "orange" | "gray";
 export type FinderSize = "sm" | "md" | "lg";
@@ -75,75 +76,93 @@ const search = ref("");
 const size = ref<"sm" | "md" | "lg">("md");
 const color = ref<"blue" | "green" | "red" | "orange" | "gray">("blue");
 
-const selectedItems = ref<FolderOrDocument[]>([]);
+const { selected, select, setSelected, clear, isSelected } =
+  useSelect<FolderOrDocument>(items);
 
-const lastClickedItem = ref<FolderOrDocument | null>(null);
+// const selectedItems = ref<FolderOrDocument[]>([]);
+
+// const lastClickedItem = ref<FolderOrDocument | null>(null);
 
 const handleCursorSelection = (selection: any) => {
   if (props.preventSelect) return;
 
   const { selectedKeys } = selection;
 
-  const items = props.items.filter((item) => 
+  const items = props.items.filter((item) =>
     selectedKeys.includes(`${item.type}-${item.item?.id}`)
   );
 
-  selectedItems.value = items;
-  emit("select", selectedItems.value);
-}
+  setSelected(items);
+  emit("select", selected.value);
+};
 
 const isCursorSelecting = ref(false);
 
 const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
   if (item.type === "empty") return; // Ignorovat prázdné položky
   if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
-    selectedItems.value = [item];
-    lastClickedItem.value = item; // Zapamatování referenčního bodu
+    select(item);
   } else {
     if (e.shiftKey) {
-      // Shift+click - od reference k aktuálnímu
-      const referenceItem = lastClickedItem.value || selectedItems.value[0];
-
-      if (referenceItem && referenceItem.type !== "empty") {
-        const referenceIndex = items.value.findIndex(
-          (i) => i.item?.id === referenceItem.item.id
-        );
-        const currentIndex = items.value.findIndex(
-          (i) => i.item?.id === item.item.id
-        );
-
-        if (referenceIndex !== -1 && currentIndex !== -1) {
-          const start = Math.min(referenceIndex, currentIndex);
-          const end = Math.max(referenceIndex, currentIndex);
-          selectedItems.value = items.value.slice(start, end + 1);
-        }
-      } else {
-        // Fallback pokud není reference
-        selectedItems.value = [item];
-        lastClickedItem.value = item;
-      }
+      select(item, { shiftKey: true });
     } else {
       // Ctrl/Cmd+click - toggle selection
-      const index = selectedItems.value.findIndex(
-        (selected) => selected.item?.id === item.item.id
-      );
-
-      if (index !== -1) {
-        selectedItems.value.splice(index, 1);
-      } else {
-        selectedItems.value.push(item);
-      }
+      select(item, { ctrlKey: true });
     }
   }
 
-  emit("select", selectedItems.value);
+  emit("select", selected.value);
 };
+
+// const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
+//   if (item.type === "empty") return; // Ignorovat prázdné položky
+//   if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
+//     selectedItems.value = [item];
+//     lastClickedItem.value = item; // Zapamatování referenčního bodu
+//   } else {
+//     if (e.shiftKey) {
+//       // Shift+click - od reference k aktuálnímu
+//       const referenceItem = lastClickedItem.value || selectedItems.value[0];
+
+//       if (referenceItem && referenceItem.type !== "empty") {
+//         const referenceIndex = items.value.findIndex(
+//           (i) => i.item?.id === referenceItem.item.id
+//         );
+//         const currentIndex = items.value.findIndex(
+//           (i) => i.item?.id === item.item.id
+//         );
+
+//         if (referenceIndex !== -1 && currentIndex !== -1) {
+//           const start = Math.min(referenceIndex, currentIndex);
+//           const end = Math.max(referenceIndex, currentIndex);
+//           selectedItems.value = items.value.slice(start, end + 1);
+//         }
+//       } else {
+//         // Fallback pokud není reference
+//         selectedItems.value = [item];
+//         lastClickedItem.value = item;
+//       }
+//     } else {
+//       // Ctrl/Cmd+click - toggle selection
+//       const index = selectedItems.value.findIndex(
+//         (selected) => selected.item?.id === item.item.id
+//       );
+
+//       if (index !== -1) {
+//         selectedItems.value.splice(index, 1);
+//       } else {
+//         selectedItems.value.push(item);
+//       }
+//     }
+//   }
+
+//   emit("select", selectedItems.value);
+// };
 
 const handleDeselect = () => {
   if (isCursorSelecting.value) return;
-  selectedItems.value = [];
-  lastClickedItem.value = null;
-  emit("select", selectedItems);
+  clear();
+  emit("select", selected.value);
 };
 
 const gridSize = computed(() => {
@@ -204,7 +223,12 @@ onMounted(() => {
       autocomplete="off"
     />
 
-    <SelectionBox @update:selection="handleCursorSelection" :disabled="props.preventSelect" @start:selection="isCursorSelecting = true" @end:selection="isCursorSelecting = false">
+    <FrameSelection
+      @update:selection="handleCursorSelection"
+      :disabled="props.preventSelect"
+      @start:selection="isCursorSelecting = true"
+      @end:selection="isCursorSelecting = false"
+    >
       <div
         v-if="items.length > 0 && !items.every((item) => item.type === 'empty')"
         class="grid gap-4 justify-between w-full"
@@ -213,14 +237,14 @@ onMounted(() => {
         @click="handleDeselect"
       >
         <template v-for="item in items" :key="item?.item?.id">
-          <SelectionBoxItem :selection-key="`${item.type}-${item.item?.id}`">
+          <FrameSelectionItem :selection-key="`${item.type}-${item.item?.id}`">
             <FolderComponent
               v-if="item.type === 'folder'"
               :folder="item.item"
               :color="item.color || color"
               :size="size"
               :tags="item.tags || []"
-              :selected="selectedItems.includes(item)"
+              :selected="isSelected(item)"
               @select="(e) => handleSelectItem(item, e)"
               @click="emit('click', item.item)"
               :prevent-select="props.preventSelect"
@@ -231,13 +255,13 @@ onMounted(() => {
               :size="size"
               :color="item.color || color"
               :tags="item.tags || []"
-              :selected="selectedItems.includes(item)"
+              :selected="isSelected(item)"
               @select="(e) => handleSelectItem(item, e)"
               @click="emit('click', item.item)"
               :prevent-select="props.preventSelect"
             />
             <div v-else class="pointer-events-none select-none w-full" />
-          </SelectionBoxItem>
+          </FrameSelectionItem>
         </template>
       </div>
       <div
@@ -247,6 +271,6 @@ onMounted(() => {
       >
         No items found.
       </div>
-    </SelectionBox>
+    </FrameSelection>
   </div>
 </template>
