@@ -100,10 +100,11 @@ const handleSelectItem = (item: FolderOrDocument, e: PointerEvent) => {
     select(item);
   } else {
     if (e.shiftKey) {
-      select(item, { shiftKey: true });
+      // Shift+click - select range
+      select(item, 'shift');
     } else {
       // Ctrl/Cmd+click - toggle selection
-      select(item, { ctrlKey: true });
+      select(item, 'ctrl');
     }
   }
   emit("select", selected.value);

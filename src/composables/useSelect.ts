@@ -13,16 +13,16 @@ export function useSelect<T>(
 
   function select(
     item: T,
-    mode: { shiftKey?: boolean; ctrlKey?: boolean } = {}
+    mode: 'click' | 'shift' | 'ctrl' = 'click'
   ) {
 
-    if (mode.shiftKey) {
+    if (mode === 'shift') {
       try {
         range(item);
       } catch (error) {
         toggle(item);
       }
-    } else if (mode.ctrlKey) {
+    } else if (mode === 'ctrl') {
       toggle(item, true);
     } else {
       toggle(item);
