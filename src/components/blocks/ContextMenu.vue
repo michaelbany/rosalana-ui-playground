@@ -54,7 +54,7 @@ let last = { x: 0, y: 0, time: 0 }; // last mouse position and time
       <slot />
     </ContextMenuTrigger>
 
-    <ContextMenuContent class="w-54">
+    <ContextMenuContent class="w-54" :collision-padding="20">
       <template v-for="(item, i) in menu" :key="i">
         <ContextMenuLabel v-if="item.label">
           {{ item.label }}
